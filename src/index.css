@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+/* //fontes */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap');
+
+.font-martel {
+    font-family: 'Martel', sans-serif;
+}
