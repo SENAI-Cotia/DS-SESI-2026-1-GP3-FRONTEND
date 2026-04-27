@@ -33,7 +33,7 @@ export default function Navbar() {
                     </input>
                 </div>
 
-                <UserRound className="text-white cursor-pointer hover:scale-110 transition" size={36} />
+             <Link to={"/login"}>  <UserRound className="text-white cursor-pointer hover:scale-110 transition" size={36} /> </Link> 
 
 
             </div>
