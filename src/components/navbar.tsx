@@ -1,5 +1,5 @@
 import logo from "../assets/KOR-logo.png"
-import { Search, UserCircle, UserRound, } from "lucide-react"
+import { Search, UserRound, } from "lucide-react"
 
 export default function Navbar() {
     return (
@@ -15,9 +15,9 @@ export default function Navbar() {
 
             {/* interações e pesquisa */}
             <div className="flex gap-12 items-center ">
-                <a href="" className="hover:scale-110 transition">Início</a>
-                <a href="" className="hover:scale-110 transition">Sobre</a>
-                <a href="" className="hover:scale-110 transition">Contato</a>
+                <a href="" className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Início</a>
+                <a href="" className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Sobre</a>
+                <a href="" className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Contato</a>
 
                 <div className="flex items-center bg-white rounded-full px-4 py-1.5 w-80 border border-gray-300 focus-within:ring-1 focus-within:ring-blue-400" >
 
