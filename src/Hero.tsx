@@ -107,7 +107,7 @@ function Hero() {
         </h2>
 
         {/* card azul grande */}
-        <div className="w-full h-96 bg-[#4A5EA8] rounded-2xl border border-[#5B3A29]">
+        <div className="w-full h-96 bg-[#4A5EA8] rounded-2xl border-4 border-[#5B3A29]">
         </div>
 
       </div>
@@ -115,7 +115,7 @@ function Hero() {
 
       {/* ================= APP SECTION ================= */}
 
-      <div className="relative bg-[#4A5EA8] border-y border-[#5B3A29] px-24 py-10 flex items-center justify-between overflow-visible">
+      <div className="relative bg-[#4A5EA8] border-y-4 border-[#5B3A29] px-24 py-10 flex items-center justify-between overflow-visible">
 
         {/* celular esquerda */}
         <div className="absolute left-8">
