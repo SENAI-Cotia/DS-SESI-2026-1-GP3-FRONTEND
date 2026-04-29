@@ -1,5 +1,6 @@
 import logo from "../assets/KOR-logo.png"
 import { Search, UserRound, } from "lucide-react"
+import { Link } from "react-router-dom"
 
 export default function Navbar() {
     return (
@@ -15,22 +16,24 @@ export default function Navbar() {
 
             {/* interações e pesquisa */}
             <div className="flex gap-12 items-center ">
-                <a href="" className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Início</a>
-                <a href="" className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Sobre</a>
-                <a href="" className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Contato</a>
+                <Link to="/" className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Início</Link>
+                <Link to="/sobre" className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Sobre</Link>
+                <Link to="/contato" className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Contato</Link>
+
+
 
                 <div className="flex items-center bg-white rounded-full px-4 py-1.5 w-80 border border-gray-300 focus-within:ring-1 focus-within:ring-blue-400" >
 
                     <Search className="text-gray-500 mr-2" size={18}></Search>
 
                     <input
-                    type="text"
-                    placeholder="Buscar..."
-                    className="w-full text-black outline-none">
+                        type="text"
+                        placeholder="Buscar..."
+                        className="w-full text-black outline-none">
                     </input>
                 </div>
 
-                <UserRound  className="text-white cursor-pointer hover:scale-110 transition" size={36} />
+                <UserRound className="text-white cursor-pointer hover:scale-110 transition" size={36} />
 
 
             </div>
