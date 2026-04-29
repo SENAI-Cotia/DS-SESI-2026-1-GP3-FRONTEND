@@ -1,6 +1,7 @@
 import Navbar from "../components/navbar"
 import Footer from "../components/footer"
 import { useState } from "react"
+import { FaPhone, FaEnvelope, FaClock } from "react-icons/fa"
 
 function Contato() {
     const [form, setForm] = useState({
@@ -27,18 +28,18 @@ function Contato() {
         <>
             <Navbar />
 
-            <main className="min-h-screen bg-gradient-to-br from-[#eef2ff] to-[#f8f9ff] px-6 md:px-12 lg:px-24 py-20">
+            <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#eef2ff] to-[#f8f9ff] px-6 md:px-12 lg:px-24">
 
                 <div className="flex justify-center">
 
-                    <section className="bg-white/80 backdrop-blur-md shadow-xl rounded-2xl p-8 border border-white/40">
+                    <section className="w-full max-w-xl bg-white/80 backdrop-blur-md shadow-xl rounded-2xl p-8 border border-white/40">
 
                         <h1 className="text-3xl font-bold text-[#3E579D] mb-2">
                             Fale conosco
                         </h1>
 
                         <p className="text-gray-600 mb-6">
-                            Tem dúvidas ou precisa de ajuda? Nossa equipe está pronta para te atender.
+                            Quer registrar sua escola na KOR? Nossa equipe está pronta para te atender.
                         </p>
 
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -95,21 +96,35 @@ function Contato() {
 
                         </form>
 
-
                         <div className="text-center mt-8">
+
                             <h2 className="text-2xl font-bold text-[#3E579D] mb-2">
                                 Atendimento
                             </h2>
 
-                            <p className="text-gray-600 mb-1">
+                            <p className="text-gray-600 mb-4">
                                 Você pode falar com a gente pelos canais abaixo:
                             </p>
 
-                            <div className="space-y-1 text-gray-700">
-                                <p>📞 (11) 99999-9999</p>
-                                <p>📧 contato@kor.com</p>
-                                <p>⏰ Segunda a sexta, 9h às 18h</p>
+                            <div className="space-y-2 text-gray-700">
+
+                                <p className="flex items-center justify-center gap-2">
+                                    <FaPhone className="text-[#4A5EA8]" />
+                                    (11) 99999-9999
+                                </p>
+
+                                <p className="flex items-center justify-center gap-2">
+                                    <FaEnvelope className="text-[#4A5EA8]" />
+                                    contato@kor.com
+                                </p>
+
+                                <p className="flex items-center justify-center gap-2">
+                                    <FaClock className="text-[#4A5EA8]" />
+                                    Segunda a sexta, 9h às 18h
+                                </p>
+
                             </div>
+
                         </div>
 
                     </section>
@@ -119,7 +134,7 @@ function Contato() {
 
             </main>
 
-            <Footer/>
+            <Footer />
         </>
     )
 }
