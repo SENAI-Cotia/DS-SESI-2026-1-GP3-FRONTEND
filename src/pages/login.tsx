@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Login() {
   return (
     <div className="h-screen w-full flex bg-[#0f172a]">
@@ -73,7 +75,7 @@ export default function Login() {
 
             <p className="text-gray-100 text-sm mt-4 text-center">
               Não possui uma conta?{" "}
-              <span className="text-blue-400 cursor-pointer">Cadastrar</span>
+              <Link to={"/cadastrar"} className="text-blue-400 cursor-pointer">Cadastrar</Link>
             </p>
           </div>
 
