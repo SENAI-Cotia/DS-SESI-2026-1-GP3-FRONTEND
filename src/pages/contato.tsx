@@ -1,28 +1,8 @@
 import Navbar from "../components/navbar"
 import Footer from "../components/footer"
-import { useState } from "react"
 import { FaPhone, FaEnvelope, FaClock } from "react-icons/fa"
 
 function Contato() {
-    const [form, setForm] = useState({
-        nome: "",
-        email: "",
-        telefone: "",
-        mensagem: ""
-    })
-
-    function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        })
-    }
-
-    function handleSubmit(e: React.FormEvent) {
-        e.preventDefault()
-        console.log(form)
-        alert("Mensagem enviada com sucesso!")
-    }
 
     return (
         <>
@@ -42,16 +22,14 @@ function Contato() {
                             Quer registrar sua escola na KOR? Nossa equipe está pronta para te atender.
                         </p>
 
-                        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                        <form className="flex flex-col gap-4">
 
                             <input
                                 type="text"
                                 name="nome"
                                 placeholder="Seu nome"
                                 required
-                                value={form.nome}
-                                onChange={handleChange}
-                                className="border border-gray-200 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A5EA8] transition"
+                                className="border border-gray-200 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A5EA8]"
                             />
 
                             <input
@@ -59,8 +37,6 @@ function Contato() {
                                 name="email"
                                 placeholder="Seu e-mail"
                                 required
-                                value={form.email}
-                                onChange={handleChange}
                                 className="border border-gray-200 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A5EA8]"
                             />
 
@@ -69,8 +45,6 @@ function Contato() {
                                 name="telefone"
                                 placeholder="Seu telefone"
                                 required
-                                value={form.telefone}
-                                onChange={handleChange}
                                 className="border border-gray-200 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4A5EA8]"
                             />
 
@@ -78,8 +52,6 @@ function Contato() {
                                 name="mensagem"
                                 placeholder="Sua mensagem..."
                                 required
-                                value={form.mensagem}
-                                onChange={handleChange}
                                 className="border border-gray-200 p-3 rounded-lg h-32 resize-none focus:outline-none focus:ring-2 focus:ring-[#4A5EA8]"
                             />
 
