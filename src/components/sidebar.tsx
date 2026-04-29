@@ -10,7 +10,7 @@ export default function Sidebar() {
       <div>
 
         {/* Logo */}
-        <div className="p-6  flex items-center gap-2 select-none">
+        <div className="p-6  flex items-center gap-2 cursor-pointer">
           <img src={logo} className="w-12 invert" />
           <h1 className="font-extralight">Kingdom of Reading</h1>
         </div>
@@ -21,7 +21,7 @@ export default function Sidebar() {
             <Users size={40} />
           </div>
 
-          <div>
+          <div className="select-none">
             <p className="font-semibold">Bibliotecária</p>
             <span className="text-sm text-white/70">
               usuario@email.com
@@ -68,7 +68,7 @@ export default function Sidebar() {
       </div>
 
       {/* Sair */}
-      <div className="p-6 border-t border-white/20 hover:bg-red-800 cursor-pointer transition">
+      <div className="p-6 border-t border-white/20 hover:bg-red-700 cursor-pointer transition">
         <button className="flex items-center gap-3 cursor-pointer">
           <LogOut size={20} />
           Sair da conta
