@@ -4,15 +4,17 @@ import { LayoutDashboard, Book, Users, Settings, LogOut } from "lucide-react"
 
 export default function Sidebar() {
   return (
-    <aside className="w-[300px] h-screen bg-[#3E579D] border-r-2 border-[#4A2B1E] text-white flex flex-col justify-between" style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}>
+    <aside className="w-[360px] h-screen bg-[#3E579D] border-r-2 border-[#4A2B1E] text-white flex flex-col justify-between" style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}>
 
       {/* TOPO */}
       <div>
 
         {/* Logo */}
         <div className="p-6  flex items-center gap-2 cursor-pointer">
-          <img src={logo} className="w-12 invert" />
-          <h1 className="font-extralight">Kingdom of Reading</h1>
+          <Link to="/" className="flex items-center">
+            <img src={logo} className="w-12 invert" />
+            <h1 className="font-extralight">Kingdom of Reading</h1>
+          </Link>
         </div>
 
         {/* Perfil */}
@@ -68,7 +70,7 @@ export default function Sidebar() {
       </div>
 
       {/* Sair */}
-      <div className="p-6 border-t border-white/20 hover:bg-red-700 cursor-pointer transition">
+      <div className="p-6 border-t border-white/20 hover:bg-[#882b2b] cursor-pointer transition">
         <button className="flex items-center gap-3 cursor-pointer">
           <LogOut size={20} />
           Sair da conta

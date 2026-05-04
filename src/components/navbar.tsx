@@ -8,9 +8,11 @@ export default function Navbar() {
 
 
             {/* logo */}
-            <div className="flex items-center cursor-pointer">
-                <img src={logo} alt="KOR logo" className="h-16 invert" />
-                <p className="text-white p-4 font-light">Kingdom of Reading</p>
+            <div className="cursor-pointer">
+                <Link to="/" className="flex items-center">
+                    <img src={logo} alt="KOR logo" className="h-16 invert" />
+                    <p className="text-white p-4 font-light">Kingdom of Reading</p>
+                </Link>
             </div>
 
 
@@ -33,7 +35,9 @@ export default function Navbar() {
                     </input>
                 </div>
 
-                <UserRound className="text-white cursor-pointer hover:scale-110 transition" size={36} />
+                <Link to="/dashboard">
+                    <UserRound className="text-white cursor-pointer hover:scale-110 transition" size={36} />
+                </Link>
 
 
             </div>
