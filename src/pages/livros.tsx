@@ -23,31 +23,43 @@ function Livros() {
                     </div>
 
                     {/* Filtros */}
-                    <div className="bg-white border rounded-xl p-4 mb-6 flex gap-4 items-center flex-wrap">
+                    <div className="bg-white border rounded-xl p-4 mb-6 flex gap-4 items-center flex-wrap justify-between">
                         <div className="flex items-center border rounded-lg px-3 py-2 w-full max-w-sm">
                             <Search size={16} className="text-gray-400 mr-2" />
                             <input
                                 type="text"
-                                placeholder="Buscar por título, livro ou ISBN..."
+                                placeholder="Buscar por nome, email ou rm..."
                                 className="outline-none w-full text-sm"
                             />
                         </div>
 
-                        <select className="border rounded-lg px-3 py-2 text-sm">
-                            <option>Todas</option>
-                            <option>Tecnologia</option>
-                        </select>
+                        <div className="flex items-center gap-4">
 
-                        <select className="border rounded-lg px-3 py-2 text-sm">
-                            <option>Todos</option>
-                            <option>Disponível</option>
-                            <option>Indisponível</option>
-                        </select>
+                            <div>
+                                <p className="text-gray-500 text-sm font-medium">Curso</p>
+                                <select className="border rounded-lg px-2 py-2 text-sm w-55">
+                                    <option>Todas</option>
+                                    <option>Desenvolvimento de Sistemas</option>
+                                </select>
+                            </div>
 
-                        <button className="flex items-center gap-2 border px-3 py-2 rounded-lg text-sm hover:bg-gray-100 cursor-pointer">
-                            <Filter size={16} />
-                            Filtrar
-                        </button>
+                            <div>
+                                <p className="text-gray-500 text-sm font-medium">Status</p>
+                                <select className="border rounded-lg px-2 py-2 text-sm w-55">
+                                    <option>Todos</option>
+                                    <option>Disponível</option>
+                                    <option>Ausente</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <p className="text-gray-500 text-sm font-medium">Filtrar por</p>
+                                <button className="flex items-center w-28 gap-2 border px-6 py-2 rounded-lg text-sm hover:bg-gray-100 cursor-pointer">
+                                    <Filter size={16} />
+                                    Filtrar
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Tabela */}
@@ -68,7 +80,7 @@ function Livros() {
                                     <td className="p-4 flex items-center gap-4">
                                         <img
                                             src="" /* Imagem do livro */
-                                            className="w-10 h-14 object-cover rounded"
+                                            className="w-12 h-18 object-cover rounded"
                                         />
                                         <div>
                                             <p className="font-medium">Eletrônica Básica</p>
