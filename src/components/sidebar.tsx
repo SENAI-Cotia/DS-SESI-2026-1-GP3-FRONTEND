@@ -4,7 +4,7 @@ import { LayoutDashboard, Book, Users, Settings, LogOut } from "lucide-react"
 
 export default function Sidebar() {
   return (
-    <aside className="w-[360px] h-screen bg-[#3E579D] border-r-2 border-[#4A2B1E] text-white flex flex-col justify-between" style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}>
+    <aside className="w-90 h-screen bg-[#3E579D] border-r-2 border-[#4A2B1E] text-white flex flex-col justify-between fixed" style={{ fontFamily: "Inter, sans-serif", fontWeight: 300 }}>
 
       {/* TOPO */}
       <div>

@@ -7,20 +7,24 @@ function Alunos() {
             <div className="flex">
                 <Sidebar />
 
-                <div className="p-6 w-[80%]">
+                <div className="bg-[#fafafa] w-[80%] ml-90 p-12">
                     {/* Header */}
-                    <div className="flex justify-between items-center mb-10">
+                    <header className="flex items-center justify-between mb-8">
                         <div>
-                            <h1 className="text-2xl font-semibold">Gerenciar alunos</h1>
-                            <p className="text-gray-500 text-sm">
+                            <h1 className="text-4xl font-medium text-[#2d2d2d]">
+                                Gerenciar alunos
+                            </h1>
+
+                            <p className="text-gray-500 text-x1 mt-1">
                                 Cadastre, edite ou remova alunos da tabela
                             </p>
                         </div>
 
-                        <button className="bg-[#3E579D] text-white px-4 py-2 rounded-lg hover:bg-[#26396e] cursor-pointer">
-                            + Adicionar via excel
+                         <button className="bg-[#3E579D] text-white px-4 py-2 rounded-lg hover:bg-[#26396e] cursor-pointer">
+                            + Adicionar tabela
                         </button>
-                    </div>
+                    </header>
+
 
                     {/* Filtros */}
                     <div className="bg-white border rounded-xl p-4 mb-6 flex gap-4 items-center flex-wrap justify-between">
