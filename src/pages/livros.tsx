@@ -162,21 +162,13 @@ function Livros() {
                         <div className="flex items-center gap-4">
 
                             <div>
-                                <p className="text-gray-500 text-sm font-medium">Curso</p>
+                                <p className="text-gray-500 text-sm font-medium">Gênero</p>
                                 <select className="border rounded-lg px-2 py-2 text-sm w-55">
-                                    <option>Todas</option>
-                                    <option>Desenvolvimento de Sistemas</option>
+                                    <option>Todos</option>
+                                    <option></option>
                                 </select>
                             </div>
 
-                            <div>
-                                <p className="text-gray-500 text-sm font-medium">Status</p>
-                                <select className="border rounded-lg px-2 py-2 text-sm w-55">
-                                    <option>Todos</option>
-                                    <option>Disponível</option>
-                                    <option>Ausente</option>
-                                </select>
-                            </div>
 
                             <div>
                                 <p className="text-gray-500 text-sm font-medium">Filtrar por</p>
@@ -195,9 +187,8 @@ function Livros() {
                                 <tr>
                                     <th className="text-left p-4 w-[30%]">Livro</th>
                                     <th className="text-left p-4 w-[20%]">Autor</th>
-                                    <th className="text-left p-4 w-[15%]">Gênero</th>
-                                    <th className="text-left p-4 w-[15%]">Ano de publicação</th>
-                                    <th className="text-left p-4 w-[10%]">Status</th>
+                                    <th className="text-left p-4 w-[20%]">Gênero</th>
+                                    <th className="text-left p-4 w-[20%]">Ano de publicação</th>
                                     <th className="text-right p-4 w-[10%]">Ações</th>
                                 </tr>
                             </thead>
@@ -224,12 +215,6 @@ function Livros() {
                                             <td className="p-4">{livro.autor}</td>
                                             <td className="p-4">{livro.genero}</td>
                                             <td className="p-4">{livro.ano}</td>
-
-                                            <td className="p-4 select-none">
-                                                <span className="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700">
-                                                    Disponível
-                                                </span>
-                                            </td>
 
                                             <td className="p-4">
                                                 <div className="flex justify-end gap-2">

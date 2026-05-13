@@ -1,25 +1,8 @@
 import Sidebar from "../components/sidebar"
 import { Search, Filter, Pencil, Trash2, UserRound } from "lucide-react"
-import { useEffect, useState } from "react";
-
-
-interface Alunos {
-    id: number,
-    nome: string,
-    email: string,
-}
-
 
 
 function Alunos() {
-
-    const [alunos, setAlunos] = useState<Alunos[]>([]);
-
-    useEffect(() => {
-        fetch("http://10.92.199.25:3000/alunos")
-            .then((response) => response.json())
-            .then(data => setAlunos(data))
-    }, [])
 
 
     return (
@@ -68,15 +51,6 @@ function Alunos() {
                             </div>
 
                             <div>
-                                <p className="text-gray-500 text-sm font-medium">Status</p>
-                                <select className="border rounded-lg px-2 py-2 text-sm w-55">
-                                    <option>Todos</option>
-                                    <option>Disponível</option>
-                                    <option>Ausente</option>
-                                </select>
-                            </div>
-
-                            <div>
                                 <p className="text-gray-500 text-sm font-medium">Filtrar por</p>
                                 <button className="flex items-center w-28 gap-2 border px-6 py-2 rounded-lg text-sm hover:bg-gray-100 cursor-pointer">
                                     <Filter size={16} />
@@ -91,52 +65,39 @@ function Alunos() {
                         <table className="w-full text-sm table-fixed">
                             <thead className="bg-gray-50 text-gray-600">
                                 <tr>
-                                    <th className="text-left p-4 w-[40%]">Aluno</th>
-                                    <th className="text-left p-4 w-[20%]">RM</th>
+                                    <th className="text-left p-4 w-[30%]">Aluno</th>
+                                    <th className="text-left p-4 w-[20%]">Email</th>
+                                    <th className="text-left p-4 w-[20%]">CPF</th>
                                     <th className="text-left p-4 w-[20%]">Curso</th>
-                                    <th className="text-left p-4 w-[10%]">Status</th>
                                     <th className="text-right p-4 w-[10%]">Ações</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                {alunos.map((aluno) => {
+                                <tr className="border-t">
+                                    <td className="p-6 flex items-center gap-4">
+                                        <UserRound className="text-gray-400" size={36} />
+                                        <p className="font-medium">Nome</p>
+                                    </td>
 
-                                    return (
-                                        <tr key={aluno.id} className="border-t">
-                                            <td className="p-6 flex items-center gap-4">
-                                                <UserRound className="text-gray-400" size={36} />
-                                                <div>
-                                                    <p className="font-medium">{aluno.nome}</p>
-                                                    <p className="text-xs text-gray-400">
-                                                        {aluno.email}
-                                                    </p>
-                                                </div>
-                                            </td>
+                                    <td className="p-4">Email</td>
+                                    <td className="p-4">123456789</td>
+                                    <td className="p-4">Teste</td>
 
-                                            <td className="p-4">Teste</td>
-                                            <td className="p-4">Teste</td>
 
-                                            <td className="p-4 select-none">
-                                                <span className="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700">
-                                                    Online
-                                                </span>
-                                            </td>
+                                    <td className="p-4">
+                                        <div className="flex justify-end gap-2">
+                                            <button className="p-2 rounded-lg bg-blue-50 border border-blue-500 hover:bg-blue-100 cursor-pointer">
+                                                <Pencil size={16} className="text-blue-500" />
+                                            </button>
 
-                                            <td className="p-4">
-                                                <div className="flex justify-end gap-2">
-                                                    <button className="p-2 rounded-lg bg-blue-50 border border-blue-500 hover:bg-blue-100 cursor-pointer">
-                                                        <Pencil size={16} className="text-blue-500" />
-                                                    </button>
+                                            <button className="p-2 rounded-lg bg-red-50 border border-red-500 hover:bg-red-100 cursor-pointer">
+                                                <Trash2 size={16} className="text-red-500" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
 
-                                                    <button className="p-2 rounded-lg bg-red-50 border border-red-500 hover:bg-red-100 cursor-pointer">
-                                                        <Trash2 size={16} className="text-red-500" />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )
-                                })}
                             </tbody>
                         </table>
                     </div>
