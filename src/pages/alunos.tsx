@@ -1,13 +1,33 @@
-import Sidebar from "@/components/sidebar"
+import Sidebar from "../components/sidebar"
 import { Search, Filter, Pencil, Trash2, UserRound } from "lucide-react"
+import { useEffect, useState } from "react";
+
+
+interface Alunos {
+    id: number,
+    nome: string,
+    email: string,
+}
+
+
 
 function Alunos() {
+
+    const [alunos, setAlunos] = useState<Alunos[]>([]);
+
+    useEffect(() => {
+        fetch("http://10.92.199.25:3000/alunos")
+            .then((response) => response.json())
+            .then(data => setAlunos(data))
+    }, [])
+
+
     return (
         <>
             <div className="flex">
                 <Sidebar />
 
-                <div className="bg-[#fafafa] w-[80%] ml-90 p-12">
+                <div className="bg-[#fafafa] w-full h-screen ml-90 p-12">
                     {/* Header */}
                     <header className="flex items-center justify-between mb-8">
                         <div>
@@ -20,7 +40,7 @@ function Alunos() {
                             </p>
                         </div>
 
-                         <button className="bg-[#3E579D] text-white px-4 py-2 rounded-lg hover:bg-[#26396e] cursor-pointer">
+                        <button className="bg-[#3E579D] text-white px-4 py-2 rounded-lg hover:bg-[#26396e] cursor-pointer">
                             + Adicionar tabela
                         </button>
                     </header>
@@ -80,38 +100,43 @@ function Alunos() {
                             </thead>
 
                             <tbody>
-                                <tr className="border-t">
-                                    <td className="p-6 flex items-center gap-4">
-                                        <UserRound className="text-gray-400" size={36} />
-                                        <div>
-                                            <p className="font-medium">Aluno</p>
-                                            <p className="text-xs text-gray-400">
-                                                aluno@gmail.com
-                                            </p>
-                                        </div>
-                                    </td>
+                                {alunos.map((aluno) => {
 
-                                    <td className="p-4">1234</td>
-                                    <td className="p-4">Desenvolvimento de Sistemas</td>
+                                    return (
+                                        <tr key={aluno.id} className="border-t">
+                                            <td className="p-6 flex items-center gap-4">
+                                                <UserRound className="text-gray-400" size={36} />
+                                                <div>
+                                                    <p className="font-medium">{aluno.nome}</p>
+                                                    <p className="text-xs text-gray-400">
+                                                        {aluno.email}
+                                                    </p>
+                                                </div>
+                                            </td>
 
-                                    <td className="p-4 select-none">
-                                        <span className="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700">
-                                            Online
-                                        </span>
-                                    </td>
+                                            <td className="p-4">Teste</td>
+                                            <td className="p-4">Teste</td>
 
-                                    <td className="p-4">
-                                        <div className="flex justify-end gap-2">
-                                            <button className="p-2 rounded-lg bg-blue-50 border border-blue-500 hover:bg-blue-100 cursor-pointer">
-                                                <Pencil size={16} className="text-blue-500" />
-                                            </button>
+                                            <td className="p-4 select-none">
+                                                <span className="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700">
+                                                    Online
+                                                </span>
+                                            </td>
 
-                                            <button className="p-2 rounded-lg bg-red-50 border border-red-500 hover:bg-red-100 cursor-pointer">
-                                                <Trash2 size={16} className="text-red-500" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                            <td className="p-4">
+                                                <div className="flex justify-end gap-2">
+                                                    <button className="p-2 rounded-lg bg-blue-50 border border-blue-500 hover:bg-blue-100 cursor-pointer">
+                                                        <Pencil size={16} className="text-blue-500" />
+                                                    </button>
+
+                                                    <button className="p-2 rounded-lg bg-red-50 border border-red-500 hover:bg-red-100 cursor-pointer">
+                                                        <Trash2 size={16} className="text-red-500" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </table>
                     </div>

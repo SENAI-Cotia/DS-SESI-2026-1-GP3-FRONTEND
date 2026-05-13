@@ -70,12 +70,14 @@ export default function Sidebar() {
       </div>
 
       {/* Sair */}
-      <div className="p-6 border-t border-white/20 hover:bg-[#882b2b] cursor-pointer transition">
-        <button className="flex items-center gap-3 cursor-pointer">
-          <LogOut size={20} />
-          Sair da conta
-        </button>
-      </div>
+      <Link to={"/"}>
+        <div className="p-6 border-t border-white/20 hover:bg-[#882b2b] cursor-pointer transition">
+          <button className="flex items-center gap-3 cursor-pointer">
+            <LogOut size={20} />
+            Sair da conta
+          </button>
+        </div>
+      </Link>
 
     </aside>
   )
