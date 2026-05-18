@@ -57,7 +57,7 @@ export default function Sidebar() {
           </Link>
 
           <Link
-            to="/config"
+            to="/configuracao"
             className="flex items-center gap-4 px-6 py-6 hover:bg-white/10 transition"
           >
             <Settings size={20} />
