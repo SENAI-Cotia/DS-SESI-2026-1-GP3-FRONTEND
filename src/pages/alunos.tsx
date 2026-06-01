@@ -1,9 +1,29 @@
 import Sidebar from "../components/sidebar"
 import { Search, Filter, Pencil, Trash2, UserRound } from "lucide-react"
+import { useEffect, useState } from "react"
 
+interface Aluno {
+    id: number
+    nome: string
+    email: string
+    cpf: string
+    curso: string
+}
 
 function Alunos() {
 
+    const [alunos, setAlunos] = useState<Aluno[]>([])
+
+    useEffect(() => {
+        fetch("http://10.92.199.25:3000/alunos")
+            .then((response) => response.json())
+            .then((data) => {
+                setAlunos(data)
+            })
+            .catch((error) => {
+                console.error("Erro ao buscar alunos:", error)
+            })
+    }, [])
 
     return (
         <>
@@ -74,29 +94,55 @@ function Alunos() {
                             </thead>
 
                             <tbody>
-                                <tr className="border-t">
-                                    <td className="p-6 flex items-center gap-4">
-                                        <UserRound className="text-gray-400" size={36} />
-                                        <p className="font-medium">Nome</p>
-                                    </td>
 
-                                    <td className="p-4">Email</td>
-                                    <td className="p-4">123456789</td>
-                                    <td className="p-4">Teste</td>
+                                {alunos.map((aluno) => (
+                                    <tr key={aluno.id} className="border-t">
 
+                                        <td className="p-6 flex items-center gap-4">
+                                            <UserRound
+                                                className="text-gray-400"
+                                                size={36}
+                                            />
 
-                                    <td className="p-4">
-                                        <div className="flex justify-end gap-2">
-                                            <button className="p-2 rounded-lg bg-blue-50 border border-blue-500 hover:bg-blue-100 cursor-pointer">
-                                                <Pencil size={16} className="text-blue-500" />
-                                            </button>
+                                            <p className="font-medium">
+                                                {aluno.nome}
+                                            </p>
+                                        </td>
 
-                                            <button className="p-2 rounded-lg bg-red-50 border border-red-500 hover:bg-red-100 cursor-pointer">
-                                                <Trash2 size={16} className="text-red-500" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        <td className="p-4">
+                                            {aluno.email}
+                                        </td>
+
+                                        <td className="p-4">
+                                            {aluno.cpf}
+                                        </td>
+
+                                        <td className="p-4">
+                                            {aluno.curso}
+                                        </td>
+
+                                        <td className="p-4">
+                                            <div className="flex justify-end gap-2">
+
+                                                <button className="p-2 rounded-lg bg-blue-50 border border-blue-500 hover:bg-blue-100 cursor-pointer">
+                                                    <Pencil
+                                                        size={16}
+                                                        className="text-blue-500"
+                                                    />
+                                                </button>
+
+                                                <button className="p-2 rounded-lg bg-red-50 border border-red-500 hover:bg-red-100 cursor-pointer">
+                                                    <Trash2
+                                                        size={16}
+                                                        className="text-red-500"
+                                                    />
+                                                </button>
+
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                ))}
 
                             </tbody>
                         </table>
