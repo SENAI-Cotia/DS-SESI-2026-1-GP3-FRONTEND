@@ -1,6 +1,8 @@
+import { Api } from "@/lib/api";
 import Sidebar from "../components/sidebar"
-import { Search, Filter, Pencil, Trash2 } from "lucide-react"
+import { Search, Pencil, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react";
+import { toast } from "sonner"
 
 interface Livros {
     id: number,
@@ -18,6 +20,9 @@ function Livros() {
     const [livros, setLivros] = useState<Livros[]>([]);
     const [busca, setBusca] = useState("");
     const [modalAberto, setModalAberto] = useState(false)
+    const [livroEditando, setLivroEditando] = useState<Livros | null>(null)
+    const [generoFiltro, setGeneroFiltro] = useState("Todos")
+    const [ordenacao, setOrdenacao] = useState("Nenhum")
 
     /* state para criar um novo livro */
     const [novoLivro, setNovoLivro] = useState({
@@ -29,25 +34,70 @@ function Livros() {
         genero: ""
     })
 
+    /* função para editar um livro já existente */
+    function abrirEdicao(livro: Livros) {
+        setLivroEditando(livro)
+
+        setNovoLivro({
+            titulo: livro.titulo,
+            capaUrl: livro.capaUrl,
+            ano: livro.ano,
+            descricao: livro.descricao,
+            autor: livro.autor,
+            genero: livro.genero
+        })
+
+        setModalAberto(true)
+    }
+
 
     /* executar algo em momentos específicos, useEffect impede que rode infinitamente */
     useEffect(() => {
-        fetch("http://10.92.199.25:3000/livros")
-            .then((response) => response.json())
-            .then(data => setLivros(data))
+        Api.get("/livros")
+            .then(response => setLivros(response.data))
     }, [])
 
-    const livrosFiltrados = livros.filter((livro) =>
+    const livrosFiltrados = livros.filter((livro) => {
 
-        livro.titulo.toLowerCase().includes(busca.toLowerCase()) ||
+        const correspondeBusca =
+            livro.titulo.toLowerCase().includes(busca.toLowerCase()) ||
+            livro.autor.toLowerCase().includes(busca.toLowerCase()) ||
+            livro.descricao.toLowerCase().includes(busca.toLowerCase())
 
-        livro.autor.toLowerCase().includes(busca.toLowerCase()) ||
+        const correspondeGenero =
+            generoFiltro === "Todos" ||
+            livro.genero === generoFiltro
 
-        livro.descricao.toLowerCase().includes(busca.toLowerCase())
+        return correspondeBusca && correspondeGenero
+    })
+        .sort((a, b) => {
 
-    )
+            switch (ordenacao) {
 
+                case "Nenhum":
+                default:
+                    return 0
 
+                case "titulo-asc":
+                    return a.titulo.localeCompare(b.titulo)
+
+                case "titulo-desc":
+                    return b.titulo.localeCompare(a.titulo)
+
+                case "autor-asc":
+                    return a.autor.localeCompare(b.autor)
+
+                case "autor-desc":
+                    return b.autor.localeCompare(a.autor)
+
+                case "ano-asc":
+                    return a.ano - b.ano
+
+                case "ano-desc":
+                    return b.ano - a.ano
+
+            }
+        })
 
 
 
@@ -63,7 +113,7 @@ function Livros() {
             !novoLivro.capaUrl ||
             !novoLivro.descricao
         ) {
-            alert("Preencha os campos obrigatórios")
+            toast.warning("Preencha os campos obrigatórios")
             return
         }
 
@@ -73,29 +123,53 @@ function Livros() {
             novoLivro.ano < 1500 ||
             novoLivro.ano > new Date().getFullYear()
         ) {
-            alert("Digite um ano válido")
+            toast.warning("Digite um ano válido")
             return
         }
 
         /* Criação do livro e enviando para API */
-        const response = await fetch("http://10.92.199.25:3000/livros", {
+        const response = await Api.post("/livros", novoLivro)
+        console.log(response)
 
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify(novoLivro)
-        })
-
-        const livroCriado = await response.json()
+        const livroCriado = response.data
 
         setLivros([...livros, livroCriado])
+
+
+        toast.success("Livro adicionado com sucesso!")
 
         setModalAberto(false)
     }
 
+
+
+
+    /* ==================== Função de editar livro na API ============================ */
+
+    async function editarLivro() {
+
+        if (!livroEditando) return
+
+        const response = await Api.put(`/livros/${livroEditando.id}`, livroEditando)
+
+
+        const livroAtualizado = response.data
+
+        setLivros(
+            livros.map((livro) =>
+                livro.id === livroEditando.id
+                    ? livroAtualizado
+                    : livro
+            )
+        )
+
+
+        toast.success("Livro atualizado com sucesso!")
+
+
+        setLivroEditando(null)
+        setModalAberto(false)
+    }
 
 
 
@@ -110,14 +184,14 @@ function Livros() {
             return
         }
 
-        await fetch(`http://10.92.199.25:3000/livros/${id}`, {
-            method: "DELETE"
-        })
+        await Api.delete(`/livros/${id}`)
 
         /* remove da tabela automaticamente */
         setLivros(
             livros.filter((livro) => livro.id !== id)
         )
+
+        toast.success("Livro deletado com sucesso!")
     }
 
 
@@ -139,7 +213,12 @@ function Livros() {
                             </p>
                         </div>
 
-                        <button onClick={() => setModalAberto(true)}
+                       
+
+                        <button onClick={() => {
+                            setModalAberto(true)
+                            setLivroEditando(null)
+                        }}
                             className="bg-[#3E579D] text-white px-4 py-2 rounded-lg hover:bg-[#26396e] cursor-pointer">
                             + Adicionar livro
                         </button>
@@ -163,19 +242,46 @@ function Livros() {
 
                             <div>
                                 <p className="text-gray-500 text-sm font-medium">Gênero</p>
-                                <select className="border rounded-lg px-2 py-2 text-sm w-55">
-                                    <option>Todos</option>
-                                    <option></option>
+
+                                <select
+                                    value={generoFiltro}
+                                    onChange={(e) => setGeneroFiltro(e.target.value)}
+                                    className="border rounded-lg px-2 py-2 text-sm w-55"
+                                >
+                                    <option value="Todos">Todos</option>
+                                    <option value="Fantasia">Fantasia</option>
+                                    <option value="Ficção Científica">Ficção Científica</option>
+                                    <option value="Romance">Romance</option>
+                                    <option value="Terror">Terror</option>
+                                    <option value="Suspense">Suspense</option>
+                                    <option value="Aventura">Aventura</option>
+                                    <option value="Drama">Drama</option>
+                                    <option value="Biografia">Biografia</option>
+                                    <option value="História">História</option>
+                                    <option value="Poesia">Poesia</option>
+                                    <option value="Infantil">Infantil</option>
+                                    <option value="Mangá">Mangá</option>
+                                    <option value="HQ">HQ</option>
                                 </select>
                             </div>
 
 
                             <div>
                                 <p className="text-gray-500 text-sm font-medium">Filtrar por</p>
-                                <button className="flex items-center w-28 gap-2 border px-6 py-2 rounded-lg text-sm hover:bg-gray-100 cursor-pointer">
-                                    <Filter size={16} />
-                                    Filtrar
-                                </button>
+
+                                <select
+                                    value={ordenacao}
+                                    onChange={(e) => setOrdenacao(e.target.value)}
+                                    className="border rounded-lg px-2 py-2 text-sm w-55"
+                                >
+                                    <option value="titulo-asc">Nenhum</option>
+                                    <option value="titulo-asc">Título (A-Z)</option>
+                                    <option value="titulo-desc">Título (Z-A)</option>
+                                    <option value="ano-asc">Ano (mais antigo)</option>
+                                    <option value="ano-desc">Ano (mais recente)</option>
+                                    <option value="autor-asc">Autor (A-Z)</option>
+                                    <option value="autor-desc">Autor (Z-A)</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -218,7 +324,7 @@ function Livros() {
 
                                             <td className="p-4">
                                                 <div className="flex justify-end gap-2">
-                                                    <button className="p-2 rounded-lg bg-blue-50 border border-blue-500 hover:bg-blue-100 cursor-pointer">
+                                                    <button className="p-2 rounded-lg bg-blue-50 border border-blue-500 hover:bg-blue-100 cursor-pointer" onClick={() => abrirEdicao(livro)}>
                                                         <Pencil size={16} className="text-blue-500" />
                                                     </button>
 
@@ -250,8 +356,9 @@ function Livros() {
 
                             <div className="flex items-center justify-between mb-6">
 
+                                {/* muda o titulo com base na função chamada */}
                                 <h2 className="text-2xl font-semibold">
-                                    Adicionar livro
+                                    {livroEditando ? "Editar livro" : "Adicionar livro"}
                                 </h2>
 
                                 <button
@@ -304,18 +411,29 @@ function Livros() {
                                     Gênero
                                 </label>
 
-                                <input
-                                    type="text"
-                                    placeholder="Gênero"
+                                <select
                                     value={novoLivro.genero}
-                                    onChange={(e) =>
-                                        setNovoLivro({
-                                            ...novoLivro,
-                                            genero: e.target.value
-                                        })
-                                    }
+                                    onChange={(e) => setNovoLivro({
+                                        ...novoLivro,
+                                        genero: e.target.value
+                                    })}
                                     className="border rounded-lg p-3"
-                                />
+                                >
+                                    <option value="Todos">Todos</option>
+                                    <option value="Fantasia">Fantasia</option>
+                                    <option value="Ficção Científica">Ficção Científica</option>
+                                    <option value="Romance">Romance</option>
+                                    <option value="Terror">Terror</option>
+                                    <option value="Suspense">Suspense</option>
+                                    <option value="Aventura">Aventura</option>
+                                    <option value="Drama">Drama</option>
+                                    <option value="Biografia">Biografia</option>
+                                    <option value="História">História</option>
+                                    <option value="Poesia">Poesia</option>
+                                    <option value="Infantil">Infantil</option>
+                                    <option value="Mangá">Mangá</option>
+                                    <option value="HQ">HQ</option>
+                                </select>
 
                                 <label className="text-sm font-medium text-gray-700">
                                     URL da Capa
@@ -387,10 +505,14 @@ function Livros() {
                                 />
 
                                 <button
-                                    onClick={adicionarLivro}
-                                    className="bg-[#3E579D] text-white py-3 rounded-lg hover:bg-[#26396e] cursor-pointer"
+                                    onClick={   /* decide a alteração com base no que foi clicado - adicionar livro, ou editar */
+                                        livroEditando
+                                            ? editarLivro
+                                            : adicionarLivro
+                                    }
+                                    className="bg-[#3E579D] text-white py-3 rounded-lg hover:bg-[#26396e] cursor-pointer my-4"
                                 >
-                                    Salvar livro
+                                    {livroEditando ? "Atualizar livro" : "Salvar livro"}
                                 </button>
 
                             </div>
