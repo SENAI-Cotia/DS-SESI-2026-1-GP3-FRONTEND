@@ -24,6 +24,8 @@ function Alunos() {
     const [modalCsvAberto, setModalCsvAberto] = useState(false)
     const [file, setFile] = useState<File>()
     const [alunoEditando, setAlunoEditando] = useState<Aluno | null>(null)
+    const [modalExcluirAberto, setModalExcluirAberto] = useState(false)
+    const [alunoParaExcluir, setAlunoParaExcluir] = useState<number | null>(null)
 
     const [novoAluno, setNovoAluno] = useState({
         nome: "",
@@ -124,13 +126,14 @@ function Alunos() {
 
             toast.success("Usuarios adicionados com sucesso")
         } catch (error) {
-            toast.error("Ocorreu um erro para processar o arquivo, tente novamante mais tarde")
+            toast.error("Ocorreu um erro para processar o arquivo, tente novemante mais tarde")
         }
 
 
     }
 
     async function adicionarAluno() {
+        console.log(novoAluno)
 
         if (
             !novoAluno.nome ||
@@ -177,7 +180,7 @@ function Alunos() {
 
         if (!alunoEditando) return
 
-        const response = await Api.put(`/alunos/${alunoEditando.id}`, alunoEditando)
+        const response = await Api.put(`/alunos/${alunoEditando.id}`, novoAluno)
 
 
         const alunoAtualizado = response.data
@@ -201,21 +204,24 @@ function Alunos() {
 
     /* ======== Função de remover alunos ==================*/
 
-    async function deletarAluno(id: number) {
+       async function deletarAluno(){
 
-        const confirmar = confirm(
-            "Deseja realmente excluir este aluno?"
-        )
 
-        if (!confirmar) return
+        if (!alunoParaExcluir) {
+            return
+        }
 
-        await Api.delete(`/alunos/${id}`)
+        await Api.delete(`/alunos/${alunoParaExcluir}`)
 
+        /* remove da tabela automaticamente */
         setAlunos(
-            alunos.filter((aluno) => aluno.id !== id)
+            alunos.filter((aluno) => aluno.id !== alunoParaExcluir)
         )
 
-        toast.success("Aluno deletado com sucesso")
+        toast.success("Aluno deletado com sucesso!")
+
+        setModalExcluirAberto(false)
+        setAlunoParaExcluir(null)
     }
 
     return (
@@ -331,55 +337,77 @@ function Alunos() {
                             </thead>
 
                             <tbody>
+                                {alunosFiltrados.length === 0 ? (
+                                    <tr>
+                                        <td
+                                            colSpan={5}
+                                            className="text-center py-16"
+                                        >
+                                            <div className="flex flex-col items-center gap-2">
+                                                <p className="text-lg font-medium text-gray-700">
+                                                    Nenhum aluno encontrado
+                                                </p>
 
-                                {alunosFiltrados.map((aluno) => (
-                                    <tr key={aluno.id} className="border-t">
-
-                                        <td className="p-6 flex items-center gap-4">
-                                            <UserRound
-                                                className="text-gray-400"
-                                                size={36}
-                                            />
-
-                                            <p className="font-medium">
-                                                {aluno.nome}
-                                            </p>
-                                        </td>
-
-                                        <td className="p-4">
-                                            {aluno.cpf}
-                                        </td>
-
-                                        <td className="p-4">
-                                            {aluno.email}
-                                        </td>
-
-                                        <td className="p-4">
-                                            {aluno.curso || "-"}
-                                        </td>
-
-                                        <td className="p-4">
-                                            <div className="flex justify-end gap-2">
-
-                                                <button className="p-2 rounded-lg bg-blue-50 border border-blue-500 hover:bg-blue-100 cursor-pointer" onClick={() => abrirEdicao(aluno)}>
-                                                    <Pencil
-                                                        size={16}
-                                                        className="text-blue-500"
-                                                    />
-                                                </button>
-
-                                                <button className="p-2 rounded-lg bg-red-50 border border-red-500 hover:bg-red-100 cursor-pointer" onClick={() => deletarAluno(aluno.id)}>
-                                                    <Trash2
-                                                        size={16}
-                                                        className="text-red-500"
-                                                    />
-                                                </button>
-
+                                                <p className="text-sm text-gray-500">
+                                                    Cadastre um aluno ou altere os filtros de busca.
+                                                </p>
                                             </div>
                                         </td>
-
                                     </tr>
-                                ))}
+                                ) : (
+
+                                    alunosFiltrados.map((aluno) => (
+                                        <tr key={aluno.id} className="border-t">
+
+                                            <td className="p-6 flex items-center gap-4">
+                                                <UserRound
+                                                    className="text-gray-400"
+                                                    size={36}
+                                                />
+
+                                                <p className="font-medium">
+                                                    {aluno.nome}
+                                                </p>
+                                            </td>
+
+                                            <td className="p-4">
+                                                {aluno.cpf}
+                                            </td>
+
+                                            <td className="p-4">
+                                                {aluno.email}
+                                            </td>
+
+                                            <td className="p-4">
+                                                {aluno.curso || "-"}
+                                            </td>
+
+                                            <td className="p-4">
+                                                <div className="flex justify-end gap-2">
+
+                                                    <button className="p-2 rounded-lg bg-blue-50 border border-blue-500 hover:bg-blue-100 cursor-pointer" onClick={() => abrirEdicao(aluno)}>
+                                                        <Pencil
+                                                            size={16}
+                                                            className="text-blue-500"
+                                                        />
+                                                    </button>
+
+                                                    <button className="p-2 rounded-lg bg-red-50 border border-red-500 hover:bg-red-100 cursor-pointer" onClick={() => {
+                                                            setAlunoParaExcluir(aluno.id)
+                                                            setModalExcluirAberto(true)
+                                                        }}>
+                                                        <Trash2
+                                                            size={16}
+                                                            className="text-red-500"
+                                                        />
+                                                    </button>
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+                                    ))
+                                )}
 
                             </tbody>
                         </table>
@@ -477,25 +505,7 @@ function Alunos() {
                                     }}
                                     className="border rounded-lg p-3"
                                 />
-
-                                <label className="text-sm font-medium text-gray-700">
-                                    Criar senha
-                                </label>
-
-                                <input
-                                    type="text"
-                                    placeholder="Criar senha"
-                                    minLength={8}
-                                    maxLength={20}
-                                    value={novoAluno.senha}
-                                    onChange={(e) =>
-                                        setNovoAluno({
-                                            ...novoAluno,
-                                            senha: e.target.value
-                                        })
-                                    }
-                                    className="border rounded-lg p-3"
-                                />
+                               
 
                                 <label className="text-sm font-medium text-gray-700">
                                     Curso
@@ -509,6 +519,7 @@ function Alunos() {
                                     })}
                                     className="border rounded-lg p-3"
                                 >
+                                    <option value="">Selecione</option>
                                     <option value="Eletroeletrônica">Eletroeletrônica</option>
                                     <option value="Eletromecânica">Eletromecânica</option>
                                     <option value="Desenvolvimento de Sistemas">Desenvolvimento de Sistemas</option>
@@ -566,6 +577,16 @@ function Alunos() {
                                     Planilha Csv
                                 </label>
 
+                                <div className="w-14 text-gray-400">
+                                    <p className="text-black">Requer:</p>
+                                    <p>*Nome
+                                        *Senha
+                                        *CPF
+                                        *E-mail
+                                        *Curso
+                                    </p>
+                                </div>
+
                                 <input
                                     type="file"
                                     className="border rounded-lg p-3"
@@ -590,7 +611,51 @@ function Alunos() {
                     </div>
 
 
-                )}
+                )
+            }
+
+
+            {/* modal de deletar livro */}
+
+            {
+                modalExcluirAberto && (
+                    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-xl p-6 w-[400px] shadow-lg">
+
+                            <h2 className="text-xl font-semibold mb-2">
+                                Confirmar exclusão
+                            </h2>
+
+                            <p className="text-gray-600 mb-6">
+                                Tem certeza que deseja excluir este aluno?
+                                Esta ação não poderá ser desfeita.
+                            </p>
+
+                            <div className="flex justify-end gap-3">
+
+                                <button
+                                    onClick={() => {
+                                        setModalExcluirAberto(false)
+                                        setAlunoParaExcluir(null)
+                                    }}
+                                    className="px-4 py-2 border rounded-lg hover:bg-gray-300 cursor-pointer"
+                                >
+                                    Cancelar
+                                </button>
+
+                                <button
+                                    onClick={deletarAluno}
+                                    className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 cursor-pointer"
+                                >
+                                    Excluir
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                )
+            }
 
         </>
     )

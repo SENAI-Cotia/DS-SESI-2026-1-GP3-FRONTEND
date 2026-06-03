@@ -91,7 +91,7 @@ function Dashboard() {
                             <div className="text-2xl mb-4">👥</div>
 
                             <div className="flex flex-col">
-                                <h3 className="text-3xl">Alunos ativos</h3>
+                                <h3 className="text-3xl">Alunos cadastrados</h3>
 
                                 <p className="text-6xl font-semibold mt-4 text-[#222]">28</p>
 

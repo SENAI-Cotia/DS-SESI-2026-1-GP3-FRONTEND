@@ -1,7 +1,7 @@
 import { Api } from "@/lib/api";
 import Sidebar from "../components/sidebar"
 import { Search, Pencil, Trash2 } from "lucide-react"
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { toast } from "sonner"
 
 interface Livros {
@@ -20,9 +20,13 @@ function Livros() {
     const [livros, setLivros] = useState<Livros[]>([]);
     const [busca, setBusca] = useState("");
     const [modalAberto, setModalAberto] = useState(false)
+    const [modalCsvAberto, setModalCsvAberto] = useState(false)
+    const [file, setFile] = useState<File>()
     const [livroEditando, setLivroEditando] = useState<Livros | null>(null)
     const [generoFiltro, setGeneroFiltro] = useState("Todos")
     const [ordenacao, setOrdenacao] = useState("Nenhum")
+    const [modalExcluirAberto, setModalExcluirAberto] = useState(false)
+    const [livroParaExcluir, setLivroParaExcluir] = useState<number | null>(null)
 
     /* state para criar um novo livro */
     const [novoLivro, setNovoLivro] = useState({
@@ -102,6 +106,35 @@ function Livros() {
 
 
     /* ======== Função de enviar a criação de livros para a API ==================*/
+    async function adicionarCSV() {
+        const formData = new FormData();
+
+        if (file == null) {
+            toast.error("Selecione um arquivo")
+            return;
+        }
+
+        formData.append("file", file)
+
+        try {
+            const response = await Api.post("/livros/upload", formData)
+
+            const livroCriado = response.data
+
+            console.log(livroCriado)
+
+            setLivros([...livros, ...livroCriado])
+
+            setModalCsvAberto(false)
+
+            toast.success("Livros adicionados com sucesso")
+        } catch (error) {
+            toast.error("Ocorreu um erro para processar o arquivo, tente novamente mais tarde")
+        }
+
+
+    }
+
     async function adicionarLivro() {
 
 
@@ -150,7 +183,7 @@ function Livros() {
 
         if (!livroEditando) return
 
-        const response = await Api.put(`/livros/${livroEditando.id}`, livroEditando)
+        const response = await Api.put(`/livros/${livroEditando.id}`, novoLivro)
 
 
         const livroAtualizado = response.data
@@ -176,22 +209,24 @@ function Livros() {
 
     /* ==================== Função de deletar livro na API ============================ */
 
-    async function deletarLivro(id: number) {
+    async function deletarLivro(){
 
-        const confirmar = confirm("Deseja realmente deletar este livro?")
 
-        if (!confirmar) {
+        if (!livroParaExcluir) {
             return
         }
 
-        await Api.delete(`/livros/${id}`)
+        await Api.delete(`/livros/${livroParaExcluir}`)
 
         /* remove da tabela automaticamente */
         setLivros(
-            livros.filter((livro) => livro.id !== id)
+            livros.filter((livro) => livro.id !== livroParaExcluir)
         )
 
         toast.success("Livro deletado com sucesso!")
+
+        setModalExcluirAberto(false)
+        setLivroParaExcluir(null)
     }
 
 
@@ -213,15 +248,23 @@ function Livros() {
                             </p>
                         </div>
 
-                       
+                        <div className="flex items-center justify-between">
 
-                        <button onClick={() => {
-                            setModalAberto(true)
-                            setLivroEditando(null)
-                        }}
-                            className="bg-[#3E579D] text-white px-4 py-2 rounded-lg hover:bg-[#26396e] cursor-pointer">
-                            + Adicionar livro
-                        </button>
+                            <button className="bg-[#3E579D] text-white mx-4 px-4 py-2 rounded-lg hover:bg-[#26396e] cursor-pointer" onClick={() => {
+                                setModalCsvAberto(true)
+                            }}>
+                                + Adicionar tabela .csv
+                            </button>
+
+
+                            <button onClick={() => {
+                                setModalAberto(true)
+                                setLivroEditando(null)
+                            }}
+                                className="bg-[#3E579D] text-white px-4 py-2 rounded-lg hover:bg-[#26396e] cursor-pointer">
+                                + Adicionar livro
+                            </button>
+                        </div>
                     </header>
 
 
@@ -252,6 +295,7 @@ function Livros() {
                                     <option value="Fantasia">Fantasia</option>
                                     <option value="Ficção Científica">Ficção Científica</option>
                                     <option value="Romance">Romance</option>
+                                    <option value="Técnico">Técnico</option>
                                     <option value="Terror">Terror</option>
                                     <option value="Suspense">Suspense</option>
                                     <option value="Aventura">Aventura</option>
@@ -300,12 +344,29 @@ function Livros() {
                             </thead>
 
                             <tbody>
-                                {livrosFiltrados.map((livro) => {
-                                    return (
-                                        <tr className="border-t">
+                                {livrosFiltrados.length === 0 ? (
+                                    <tr>
+                                        <td
+                                            colSpan={5}
+                                            className="text-center py-16"
+                                        >
+                                            <div className="flex flex-col items-center gap-2">
+                                                <p className="text-lg font-medium text-gray-700">
+                                                    Nenhum livro encontrado
+                                                </p>
+
+                                                <p className="text-sm text-gray-500">
+                                                    Adicione um livro ou altere os filtros de busca.
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    livrosFiltrados.map((livro) => (
+                                        <tr key={livro.id} className="border-t">
                                             <td className="p-4 flex items-center gap-4">
                                                 <img
-                                                    src={livro.capaUrl} /* Imagem do livro */
+                                                    src={livro.capaUrl}
                                                     className="w-12 h-18 object-cover rounded"
                                                 />
 
@@ -315,7 +376,6 @@ function Livros() {
                                                         {livro.descricao}
                                                     </p>
                                                 </div>
-
                                             </td>
 
                                             <td className="p-4">{livro.autor}</td>
@@ -328,7 +388,11 @@ function Livros() {
                                                         <Pencil size={16} className="text-blue-500" />
                                                     </button>
 
-                                                    <button onClick={() => deletarLivro(livro.id)}
+                                                    <button
+                                                        onClick={() => {
+                                                            setLivroParaExcluir(livro.id)
+                                                            setModalExcluirAberto(true)
+                                                        }}
                                                         className="p-2 rounded-lg bg-red-50 border border-red-500 hover:bg-red-100 cursor-pointer">
                                                         <Trash2 size={16} className="text-red-500" />
                                                     </button>
@@ -336,7 +400,9 @@ function Livros() {
                                             </td>
                                         </tr>
                                     )
-                                })}
+                                    )
+                                )
+                                }
 
                             </tbody>
                         </table>
@@ -419,11 +485,11 @@ function Livros() {
                                     })}
                                     className="border rounded-lg p-3"
                                 >
-                                    <option value="Todos">Todos</option>
                                     <option value="Fantasia">Fantasia</option>
                                     <option value="Ficção Científica">Ficção Científica</option>
                                     <option value="Romance">Romance</option>
                                     <option value="Terror">Terror</option>
+                                    <option value="Técnico">Técnico</option>
                                     <option value="Suspense">Suspense</option>
                                     <option value="Aventura">Aventura</option>
                                     <option value="Drama">Drama</option>
@@ -493,7 +559,7 @@ function Livros() {
 
                                 <textarea
                                     placeholder="Descrição"
-                                    maxLength={100}
+                                    maxLength={200}
                                     value={novoLivro.descricao}
                                     onChange={(e) =>
                                         setNovoLivro({
@@ -520,6 +586,119 @@ function Livros() {
                     </div>
                 )
             }
+
+
+            {/* Formulário de adicionar novo livro .csv */}
+
+            {
+                modalCsvAberto && (
+
+                    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+                        <div className="bg-white w-125 rounded-xl p-6">
+
+                            <div className="flex items-center justify-between mb-6">
+                                <h2 className="text-2xl font-semibold">
+                                    Adicionar planilha
+                                </h2>
+
+                                <button
+                                    onClick={() => {
+                                        setModalCsvAberto(false)
+                                    }}
+                                    className="text-gray-500 hover:text-black text-xl cursor-pointer"
+                                >
+                                    ×
+                                </button>
+                            </div>
+
+                            <div className="flex flex-col gap-4">
+
+
+                                <label className="text-sm font-medium text-gray-700">
+                                    Planilha Csv
+                                </label>
+
+                                <div className="w-20 text-gray-400">
+                                    <p className="text-black">Requer:</p>
+                                    <p>*Título
+                                        *Autor
+                                        *Gênero
+                                        *Ano
+                                        *Descrição
+                                        *URL capa
+                                    </p>
+                                </div>
+
+                                <input
+                                    type="file"
+                                    className="border rounded-lg p-3"
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                        const files = e.target.files
+
+                                        if (files && files.length > 0) {
+                                            setFile(files[0])
+                                        }
+                                    }}
+                                />
+
+                                <button
+                                    onClick={() => adicionarCSV()}
+                                    className="bg-[#3E579D] text-white py-3 rounded-lg hover:bg-[#26396e] cursor-pointer my-4"
+                                >
+                                    Salvar planilha
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                )
+            }
+
+            {/* modal de deletar livro */}
+
+            {
+                modalExcluirAberto && (
+                    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-xl p-6 w-[400px] shadow-lg">
+
+                            <h2 className="text-xl font-semibold mb-2">
+                                Confirmar exclusão
+                            </h2>
+
+                            <p className="text-gray-600 mb-6">
+                                Tem certeza que deseja excluir este livro?
+                                Esta ação não poderá ser desfeita.
+                            </p>
+
+                            <div className="flex justify-end gap-3">
+
+                                <button
+                                    onClick={() => {
+                                        setModalExcluirAberto(false)
+                                        setLivroParaExcluir(null)
+                                    }}
+                                    className="px-4 py-2 border rounded-lg hover:bg-gray-300 cursor-pointer"
+                                >
+                                    Cancelar
+                                </button>
+
+                                <button
+                                    onClick={deletarLivro}
+                                    className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 cursor-pointer"
+                                >
+                                    Excluir
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                )
+            }
+
         </>
     )
 }
