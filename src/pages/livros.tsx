@@ -144,7 +144,8 @@ function Livros() {
             !novoLivro.autor ||
             !novoLivro.genero ||
             !novoLivro.capaUrl ||
-            !novoLivro.descricao
+            !novoLivro.descricao ||
+            !novoLivro.ano
         ) {
             toast.warning("Preencha os campos obrigatórios")
             return
@@ -209,7 +210,7 @@ function Livros() {
 
     /* ==================== Função de deletar livro na API ============================ */
 
-    async function deletarLivro(){
+    async function deletarLivro() {
 
 
         if (!livroParaExcluir) {
@@ -253,7 +254,7 @@ function Livros() {
                             <button className="bg-[#3E579D] text-white mx-4 px-4 py-2 rounded-lg hover:bg-[#26396e] cursor-pointer" onClick={() => {
                                 setModalCsvAberto(true)
                             }}>
-                                + Adicionar tabela .csv
+                                + Adicionar planilha Excel
                             </button>
 
 
@@ -318,7 +319,7 @@ function Livros() {
                                     onChange={(e) => setOrdenacao(e.target.value)}
                                     className="border rounded-lg px-2 py-2 text-sm w-55"
                                 >
-                                    <option value="titulo-asc">Nenhum</option>
+                                    <option value="nenhum">Nenhum</option>
                                     <option value="titulo-asc">Título (A-Z)</option>
                                     <option value="titulo-desc">Título (Z-A)</option>
                                     <option value="ano-asc">Ano (mais antigo)</option>

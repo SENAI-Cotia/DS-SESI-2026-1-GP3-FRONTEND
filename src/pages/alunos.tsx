@@ -32,7 +32,7 @@ function Alunos() {
         email: "",
         cpf: "",
         curso: "",
-        senha: ""
+        senha: "Senai2026"
     })
 
 
@@ -88,7 +88,7 @@ function Alunos() {
             email: aluno.email,
             cpf: aluno.cpf,
             curso: aluno.curso,
-            senha: aluno.senha
+            senha: "Senai2026"
         })
 
         setModalAberto(true)
@@ -133,42 +133,45 @@ function Alunos() {
     }
 
     async function adicionarAluno() {
-        console.log(novoAluno)
+        try {
+            if (
+                !novoAluno.nome ||
+                !novoAluno.email ||
+                !novoAluno.cpf ||
+                !novoAluno.curso
+            ) {
+                toast.warning("Preencha os campos obrigatórios")
+                return
+            }
 
-        if (
-            !novoAluno.nome ||
-            !novoAluno.email ||
-            !novoAluno.cpf ||
-            !novoAluno.senha ||
-            !novoAluno.curso
-        ) {
-            toast.warning("Preencha os campos obrigatórios")
-            return
+            if (novoAluno.cpf.length !== 11) {
+                toast.warning("O CPF precisa ter 11 caracteres")
+                return
+            }
+
+            const response = await Api.post("/usuarios", novoAluno)
+
+            const alunoCriado = response.data
+
+            setAlunos([...alunos, alunoCriado])
+
+            setModalAberto(false)
+
+            setNovoAluno({
+                nome: "",
+                email: "",
+                cpf: "",
+                curso: "",
+                senha: "Senai2026"
+            })
+
+            toast.success("Aluno adicionado com sucesso!")
+
+        } catch (error: any) {
+            toast.error(
+                error.response?.data?.error || "Erro ao cadastrar aluno"
+            )
         }
-
-        if (novoAluno.senha.length < 8) {
-            toast.warning("A senha precisa de no mínimo 8 caracteres")
-            return
-        }
-
-        const response = await Api.post("/usuarios", novoAluno)
-        console.log(response)
-
-        const alunoCriado = response.data
-
-        setAlunos([...alunos, alunoCriado])
-
-        setModalAberto(false)
-
-        setNovoAluno({
-            nome: "",
-            email: "",
-            cpf: "",
-            curso: "",
-            senha: ""
-        })
-
-        toast.success("Aluno adicionado com sucesso!")
     }
 
 
@@ -204,11 +207,11 @@ function Alunos() {
 
     /* ======== Função de remover alunos ==================*/
 
-       async function deletarAluno(){
+    async function deletarAluno() {
 
 
         if (!alunoParaExcluir) {
-            return
+            toast.error("Erro ao deletar aluno")
         }
 
         await Api.delete(`/alunos/${alunoParaExcluir}`)
@@ -246,7 +249,7 @@ function Alunos() {
                             <button className="bg-[#3E579D] text-white mx-4 px-4 py-2 rounded-lg hover:bg-[#26396e] cursor-pointer" onClick={() => {
                                 setModalCsvAberto(true)
                             }}>
-                                + Adicionar tabela .csv
+                                + Adicionar planilha Excel
                             </button>
 
                             <button
@@ -258,7 +261,7 @@ function Alunos() {
                                         email: "",
                                         cpf: "",
                                         curso: "",
-                                        senha: ""
+                                        senha: "Senai2026"
                                     })
 
                                     setModalAberto(true)
@@ -393,9 +396,9 @@ function Alunos() {
                                                     </button>
 
                                                     <button className="p-2 rounded-lg bg-red-50 border border-red-500 hover:bg-red-100 cursor-pointer" onClick={() => {
-                                                            setAlunoParaExcluir(aluno.id)
-                                                            setModalExcluirAberto(true)
-                                                        }}>
+                                                        setAlunoParaExcluir(aluno.id)
+                                                        setModalExcluirAberto(true)
+                                                    }}>
                                                         <Trash2
                                                             size={16}
                                                             className="text-red-500"
@@ -505,7 +508,21 @@ function Alunos() {
                                     }}
                                     className="border rounded-lg p-3"
                                 />
-                               
+
+                                {!alunoEditando && (
+                                    <>
+                                        <label className="text-sm font-medium text-gray-700">
+                                            Senha padrão
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            value="Senai2026"
+                                            disabled
+                                            className="border rounded-lg p-3 bg-gray-100 cursor-not-allowed"
+                                        />
+                                    </>
+                                )}
 
                                 <label className="text-sm font-medium text-gray-700">
                                     Curso
@@ -580,7 +597,6 @@ function Alunos() {
                                 <div className="w-14 text-gray-400">
                                     <p className="text-black">Requer:</p>
                                     <p>*Nome
-                                        *Senha
                                         *CPF
                                         *E-mail
                                         *Curso
