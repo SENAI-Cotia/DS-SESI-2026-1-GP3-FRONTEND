@@ -1,6 +1,39 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
+  const navigate = useNavigate(); // 👈 ADICIONADO
+
+  async function handleLogin() {
+    try {
+      const response = await fetch("http://10.92.199.11:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          senha: senha,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Login sucesso:", data);
+        navigate("/hero"); // 👈 ALTERADO AQUI
+      } else {
+        alert(data.error || "Erro ao logar");
+      }
+    } catch (error) {
+      console.error("Erro:", error);
+      alert("Erro ao conectar com servidor");
+    }
+  }
+
   return (
     <div className="h-screen w-full flex bg-[#0f172a]">
       {/* LADO ESQUERDO */}
@@ -50,6 +83,8 @@ export default function Login() {
           <input
             type="text"
             placeholder="Email/CPF"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full mt-1 mb-4 p-3 rounded-lg bg-white text-black outline-none"
           />
 
@@ -57,6 +92,8 @@ export default function Login() {
           <input
             type="password"
             placeholder="Senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
             className="w-full mt-1 mb-2 p-3 rounded-lg bg-white text-black outline-none"
           />
 
@@ -67,6 +104,7 @@ export default function Login() {
           <button
             type="button"
             className="w-full bg-blue-900 hover:bg-blue-800 transition p-3 rounded-lg text-white font-semibold"
+            onClick={handleLogin}
           >
             Entrar
           </button>
