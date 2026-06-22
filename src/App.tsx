@@ -43,6 +43,7 @@ export default function App() {
       <Route path="/privacidade" element={<Privacidade />} />
       <Route path="/suporte" element={<Suporte />} />
       <Route path="/faq" element={<FAQ />} />
+      <Route path="/hero" element={<Hero />} />
     </Routes>
   );
 }
