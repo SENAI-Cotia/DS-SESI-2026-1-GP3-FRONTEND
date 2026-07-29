@@ -1,114 +1,160 @@
 import Sidebar from "@/components/sidebar";
 import {
   User,
-  Pencil,
   Headphones,
+  Mail,
+  FileText,
   Send,
 } from "lucide-react";
 
+interface LoggedUser {
+  userId: number;
+  nome: string;
+  email: string;
+  foto?: string;
+}
+
 export default function Suporte() {
+  const loggedUser: LoggedUser | null = JSON.parse(
+    sessionStorage.getItem("user") || "null"
+  );
+
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex">
       <Sidebar />
 
-      {/* Conteúdo principal com scroll apenas na direita */}
-      <main className="flex-1 h-screen overflow-y-auto px-10 py-8">
-        {/* Título */}
-        <div className="mb-6">
-          <h1 className="text-4xl font-bold text-neutral-800">
-            Configurações
+      <main className="bg-[#fafafa] w-full min-h-screen ml-90 p-12">
+
+        {/* Header */}
+        <header className="mb-8">
+          <h1 className="text-4xl font-medium text-[#2d2d2d]">
+            Suporte
           </h1>
-          <p className="mt-2 text-gray-600 max-w-xl leading-relaxed">
-            Altere informações ou configurações de acordo com sua preferência.
+
+          <p className="text-gray-500 mt-1">
+            Entre em contato com nossa equipe para dúvidas, sugestões ou problemas.
           </p>
-        </div>
+        </header>
 
         {/* Perfil */}
-        <div className="flex flex-col items-center mb-10">
-          <div className="w-40 h-40 rounded-full bg-neutral-600 flex items-center justify-center mb-4">
-            <User size={90} color="white" />
-          </div>
+        <section className="bg-white border rounded-xl p-6 mb-8 shadow-sm">
+          <div className="flex items-center gap-6">
 
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2">
-              <h2 className="text-4xl font-bold text-neutral-800">
-                Bibliotecária
-              </h2>
+            <div className="w-28 h-28 rounded-full bg-[#3E579D] flex items-center justify-center overflow-hidden">
 
-              <button type="button">
-                <Pencil size={24} />
-              </button>
+              {loggedUser?.foto ? (
+                <img
+                  src={loggedUser.foto}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User
+                  size={55}
+                  className="text-white"
+                />
+              )}
+
             </div>
 
-            <p className="text-sm text-gray-600 mt-1">
-              usuario123@gmail.com
-            </p>
-          </div>
-        </div>
+            <div>
+              <h2 className="text-2xl font-semibold text-neutral-800">
+                {loggedUser?.nome}
+              </h2>
 
-        {/* Card de Suporte */}
-        <div className="bg-white rounded-2xl border border-gray-300 shadow-lg overflow-hidden">
-          {/* Cabeçalho */}
-          <div className="flex items-center gap-4 px-6 py-5 border-b border-gray-300">
+              <p className="text-gray-500">
+                {loggedUser?.email}
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        {/* Card */}
+        <section className="bg-white border rounded-xl shadow-sm">
+
+          <div className="flex items-center gap-4 p-6 border-b">
+
             <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
               <Headphones size={22} />
             </div>
 
             <div>
-              <h3 className="text-xl font-semibold text-neutral-800">
-                Suporte
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Converse com nossa equipe para tirar dúvidas ou relatar
-                problemas.
+              <h2 className="text-xl font-semibold">
+                Central de suporte
+              </h2>
+
+              <p className="text-sm text-gray-500">
+                Nossa equipe responderá sua solicitação por e-mail.
               </p>
             </div>
+
           </div>
 
-          {/* Conteúdo */}
-          <div className="p-8">
-            {/* Caixa de chat */}
-            <div className="border border-gray-300 rounded-xl bg-gray-50 p-6 min-h-[400px] flex flex-col justify-between">
-              {/* Mensagens de exemplo */}
-              <div className="space-y-4">
-                <div className="max-w-[75%] bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-sm">
-                  <p className="text-sm text-gray-800">
-                    Olá! Como podemos ajudar você hoje?
-                  </p>
-                </div>
+          <div className="p-8 space-y-6">
 
-                <div className="max-w-[75%] ml-auto bg-[#4C5DA8] text-white rounded-2xl px-4 py-3">
-                  <p className="text-sm">
-                    Estou com dúvidas sobre como alterar minha senha.
-                  </p>
-                </div>
+            <div>
+              <label className="text-sm text-gray-600">
+                Assunto
+              </label>
 
-                <div className="max-w-[75%] bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-sm">
-                  <p className="text-sm text-gray-800">
-                    Acesse a aba “Privacidade e segurança” e preencha os campos
-                    de senha atual e nova senha.
-                  </p>
-                </div>
-              </div>
-
-              {/* Campo de mensagem */}
-              <div className="mt-6 flex items-center gap-3">
-                <input
-                  type="text"
-                  placeholder="Digite sua mensagem..."
-                  className="flex-1 border border-gray-300 rounded-full px-5 py-3 outline-none focus:ring-2 focus:ring-[#4C5DA8]"
+              <div className="relative mt-1">
+                <FileText
+                  size={18}
+                  className="absolute left-3 top-3 text-gray-400"
                 />
 
-                <button
-                  type="button"
-                  className="w-12 h-12 rounded-full bg-[#4C5DA8] text-white flex items-center justify-center hover:opacity-90 transition"
-                >
-                  <Send size={20} />
-                </button>
+                <input
+                  type="text"
+                  placeholder="Ex.: Problema ao cadastrar um livro"
+                  className="w-full border rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#3E579D]"
+                />
               </div>
             </div>
+
+            <div>
+              <label className="text-sm text-gray-600">
+                E-mail para resposta
+              </label>
+
+              <div className="relative mt-1">
+                <Mail
+                  size={18}
+                  className="absolute left-3 top-3 text-gray-400"
+                />
+
+                <input
+                  type="email"
+                  defaultValue={loggedUser?.email}
+                  className="w-full border rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#3E579D]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm text-gray-600">
+                Descreva o problema
+              </label>
+
+              <textarea
+                rows={8}
+                placeholder="Explique o que aconteceu para que possamos ajudá-lo."
+                className="w-full mt-1 border rounded-lg px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-[#3E579D]"
+              />
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                className="flex items-center gap-2 bg-[#3E579D] text-white px-6 py-3 rounded-lg hover:bg-[#26396e] transition cursor-pointer"
+              >
+                <Send size={18} />
+                Enviar solicitação
+              </button>
+            </div>
+
           </div>
-        </div>
+
+        </section>
+
       </main>
     </div>
   );

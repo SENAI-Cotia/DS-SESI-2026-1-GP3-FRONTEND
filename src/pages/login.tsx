@@ -1,51 +1,73 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Api } from "@/lib/api";
+import { jwtDecode } from 'jwt-decode';
+import { toast } from "sonner";
+
+
+interface LoginType {
+  token: string
+}
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [usuario, setUsuario] = useState({
+    email: "",
+    senha: "",
+  });
+  const [erro, setErro] = useState("");
+  const navigate = useNavigate()
 
-  const navigate = useNavigate(); // 👈 ADICIONADO
+  /* Atualizar os campos */
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setUsuario({
+      ...usuario,
+      [e.target.name]: e.target.value,
+    });
+  }
 
   async function handleLogin() {
+    setErro("");
+
+    if (!usuario.email || !usuario.senha) {
+      setErro("Preencha todos os campos.");
+      return;
+    }
+
     try {
-      const response = await fetch("http://10.92.199.11:3000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          senha: senha,
-        }),
+      const response = await Api.post<LoginType>("/login", {
+        email: usuario.email,
+        senha: usuario.senha,
       });
 
-      const data = await response.json();
+      const token = response.data.token
 
-      if (response.ok) {
-        console.log("Login sucesso:", data);
-        navigate("/hero"); // 👈 ALTERADO AQUI
-      } else {
-        alert(data.error || "Erro ao logar");
-      }
-    } catch (error) {
-      console.error("Erro:", error);
-      alert("Erro ao conectar com servidor");
+      sessionStorage.setItem("token", token)
+      sessionStorage.setItem("user", JSON.stringify(jwtDecode(token)))
+
+      navigate("/");
+      toast.success("Login realizado com sucesso!")
+    } catch (error: any) {
+      setErro(
+        error.response?.data?.message ||
+        "Não foi possível conectar ao servidor."
+      );
     }
+
   }
 
   return (
-    <div className="h-screen w-full flex bg-[#0f172a]">
+    <div
+      className="h-screen w-full flex"
+      style={{
+        backgroundImage:
+          "linear-gradient(to right, rgba(15,23,42,0.9), rgba(15,23,42,0.6)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       {/* LADO ESQUERDO */}
-      <div
-        className="w-1/2 flex flex-col justify-center px-16 text-white relative"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.7)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
+      <div className="w-1/2 flex flex-col justify-center px-16 text-white relative">
         <img
           src="/KOR logo.png"
           alt="Kingdom of Reading"
@@ -67,35 +89,43 @@ export default function Login() {
           o que seus colegas acharam.
         </p>
 
-        <p className="absolute bottom-4 text-xs text-gray-400">
+        <p className="absolute bottom-4 left-4 text-xs text-white">
           © Kingdom of Reading - KOR All rights reserved.
         </p>
       </div>
 
       {/* LADO DIREITO */}
-      <div className="w-1/2 flex items-center justify-center bg-gradient-to-br from-[#0f172a] to-[#284d8a]">
-        <div className="backdrop-blur-md bg-white/20 border border-white/20 p-10 rounded-2xl shadow-2xl w-[400px]">
+      <div className="w-1/2 flex items-center justify-center">
+        <div className="backdrop-blur-md bg-white/10 border border-white/20 p-10 rounded-2xl shadow-2xl w-[400px]">
           <h2 className="text-white text-center text-lg tracking-widest mb-6">
             LOGIN
           </h2>
 
           <label className="text-gray-200 text-sm">E-mail ou CPF</label>
           <input
+            name="email"
             type="text"
             placeholder="Email/CPF"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={usuario.email}
+            onChange={handleChange}
             className="w-full mt-1 mb-4 p-3 rounded-lg bg-white text-black outline-none"
           />
 
           <label className="text-gray-200 text-sm">Senha</label>
           <input
+            name="senha"
             type="password"
             placeholder="Senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
+            value={usuario.senha}
+            onChange={handleChange}
+            onKeyDown={(e) => e.key === "Enter" && handleLogin()}
             className="w-full mt-1 mb-2 p-3 rounded-lg bg-white text-black outline-none"
           />
+          {erro && (
+            <p className="text-red-400 text-sm mb-4 text-center">
+              {erro}
+            </p>
+          )}
 
           <p className="text-blue-400 text-sm mb-4 cursor-pointer">
             Esqueci a senha
@@ -103,8 +133,8 @@ export default function Login() {
 
           <button
             type="button"
-            className="w-full bg-blue-900 hover:bg-blue-800 transition p-3 rounded-lg text-white font-semibold"
             onClick={handleLogin}
+            className="w-full bg-blue-900 hover:bg-blue-800 transition p-3 rounded-lg text-white font-semibold cursor-pointer"
           >
             Entrar
           </button>

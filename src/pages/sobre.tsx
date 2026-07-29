@@ -1,7 +1,22 @@
 import Footer from "@/components/footer"
 import Navbar from "../components/navbar"
+import { useNavigate } from "react-router-dom";
 
 function Sobre() {
+  const navigate = useNavigate();
+
+  /* se nao estiver logado, vai para o login */
+  function handleComeçar() {
+    const usuario = sessionStorage.getItem("user");
+
+    if (!usuario) {
+      navigate("/login");
+      return;
+    }
+
+    navigate("/dashboard")
+  }
+
   return (
     <>
       <Navbar />
@@ -114,7 +129,7 @@ function Sobre() {
             Comece a organizar sua biblioteca agora mesmo.
           </p>
 
-          <button className="bg-[#4A5EA8] text-white px-8 py-3 rounded-lg hover:scale-105 transition cursor-pointer">
+          <button onClick={handleComeçar} className="bg-[#4A5EA8] text-white px-8 py-3 rounded-lg hover:scale-105 transition cursor-pointer">
             Começar agora
           </button>
 
@@ -122,7 +137,7 @@ function Sobre() {
 
       </main>
 
-      <Footer/>
+      <Footer />
     </>
   )
 }

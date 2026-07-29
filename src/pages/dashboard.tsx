@@ -1,6 +1,22 @@
-import Sidebar from "@/components/sidebar"
+import Sidebar from "@/components/sidebar";
+import {
+    BookOpen,
+    Users,
+    Star,
+    Trophy,
+    Clock3,
+} from "lucide-react";
 
 function Dashboard() {
+    /* data de hoje */
+    const hoje = new Date();
+
+    const dataAtual = hoje.toLocaleDateString("pt-BR", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+
     return (
         <>
             <div className="flex">
@@ -20,7 +36,7 @@ function Dashboard() {
                         </div>
 
                         <span className="text-gray-500 text-lg">
-                            23 de abril de 2026
+                            {dataAtual}
                         </span>
                     </header>
 
@@ -28,16 +44,17 @@ function Dashboard() {
                     <section className="bg-white rounded-2xl border border-gray-300 shadow-md p-6 flex justify-between items-center mb-8">
                         <div className="flex gap-6">
                             <img
-                                src=""
+                                src="https://m.media-amazon.com/images/I/91vZPd9AKhL._UF1000,1000_QL80_.jpg"
                                 alt="Livro"
                                 className="w-40 h-56 object-cover rounded-md"
                             />
 
                             <div className="flex flex-col justify-between">
                                 <div>
-                                    <span className="bg-blue-100 text-blue-700 px-4 py-1 rounded-md text-sm font-normal">
-                                        ★ Mais lido da semana
-                                    </span>
+                                    <div className="flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1 rounded-md text-sm font-normal w-fit">
+                                        <Trophy size={16} />
+                                        <span>Mais lido da semana</span>
+                                    </div>
 
                                     <h2 className="text-3xl font-semibold mt-3 text-[#222]">
                                         Eletrônica Básica
@@ -47,9 +64,10 @@ function Dashboard() {
                                         Newton C. Braga
                                     </p>
 
-                                    <p className="text-gray-500 text-sm mt-6">
-                                        👥 52 alunos leram esse livro
-                                    </p>
+                                    <div className="flex items-center gap-2 text-gray-500 text-sm mt-6">
+                                        <Users size={16} />
+                                        <span>52 alunos leram esse livro</span>
+                                    </div>
                                 </div>
 
                                 <button className="bg-[#4a5db2] hover:bg-[#3c4d9a] transition text-white px-8 py-2 rounded-lg text-lg w-fit cursor-pointer">
@@ -59,8 +77,12 @@ function Dashboard() {
                         </div>
 
                         {/* Ícone decorativo */}
-                        <div className="text-[#dbe4ff] text-9xl hidden lg:block">
-                            🏆
+                        <div className="hidden lg:flex items-center justify-center">
+                            <Trophy
+                                size={120}
+                                className="text-[#dbe4ff]"
+                                strokeWidth={1.3}
+                            />
                         </div>
                     </section>
 
@@ -69,7 +91,10 @@ function Dashboard() {
 
                         <div className="flex gap-2 bg-gradient-to-br from-[#4d5fb4] to-[#28315f] text-white rounded-2xl px-6 py-12 shadow-md">
 
-                            <div className="text-2xl mb-4">📚</div>
+                            <BookOpen
+                                size={34}
+                                className="mt-1"
+                            />
                             <div className="flex flex-col">
                                 <h3 className="text-3xl">Livros cadastrados</h3>
 
@@ -80,7 +105,7 @@ function Dashboard() {
                                     Total de livros no sistema
                                 </span>
 
-                                <button className="text-left mt-8 text-lg hover:underline">
+                                <button className="text-left mt-8 text-lg hover:underline cursor-pointer">
                                     Ver todos →
                                 </button>
                             </div>
@@ -88,7 +113,10 @@ function Dashboard() {
 
                         {/* Card 2 */}
                         <div className="flex gap-2 bg-white rounded-2xl px-6 py-12 p-6 border border-gray-300 shadow-md">
-                            <div className="text-2xl mb-4">👥</div>
+                            <Users
+                                size={34}
+                                className="mt-1 text-[#4a5db2]"
+                            />
 
                             <div className="flex flex-col">
                                 <h3 className="text-3xl">Alunos cadastrados</h3>
@@ -99,7 +127,7 @@ function Dashboard() {
                                     Alunos com atividade recente
                                 </span>
 
-                                <button className="text-left mt-8 text-lg text-[#4a5db2] hover:underline">
+                                <button className="text-left mt-8 text-lg text-[#4a5db2] hover:underline cursor-pointer">
                                     Ver todos →
                                 </button>
                             </div>
@@ -107,7 +135,11 @@ function Dashboard() {
 
                         {/* Card 3 */}
                         <div className="flex bg-white rounded-2xl px-6 py-12 p-6 border border-gray-300 shadow-md">
-                            <div className="text-2xl mb-4">⭐</div>
+                            <Star
+                                size={34}
+                                className="mt-1 text-yellow-500"
+                                fill="currentColor"
+                            />
 
                             <div className="flex flex-col">
                                 <h3 className="text-3xl">Avaliações recentes</h3>
@@ -118,7 +150,7 @@ function Dashboard() {
                                     Avaliações realizadas recentemente
                                 </span>
 
-                                <button className="text-left mt-8 text-lg text-[#4a5db2] hover:underline">
+                                <button className="text-left mt-8 text-lg text-[#4a5db2] hover:underline cursor-pointer">
                                     Ver todos →
                                 </button>
                             </div>
@@ -128,11 +160,18 @@ function Dashboard() {
                     {/* Atividades */}
                     <section className="bg-white rounded-2xl border border-gray-300 shadow-md p-6">
                         <div className="flex items-center justify-between mb-12">
-                            <h2 className="text-3xl font-semibold text-[#222]">
-                                🕒 Atividade recente
-                            </h2>
+                            <div className="flex items-center gap-3">
+                                <Clock3
+                                    size={28}
+                                    className="text-[#4a5db2]"
+                                />
 
-                            <button className="text-[#4a5db2] text-lg hover:underline">
+                                <h2 className="text-3xl font-semibold text-[#222]">
+                                    Atividade recente
+                                </h2>
+                            </div>
+
+                            <button className="text-[#4a5db2] text-lg hover:underline cursor-pointer">
                                 Ver todos →
                             </button>
                         </div>
@@ -149,9 +188,18 @@ function Dashboard() {
                                             <strong>“Manual de DevOps”</strong>
                                         </p>
 
-                                        <span className="text-gray-500">
-                                            Nota: ⭐⭐⭐⭐ 4.0
-                                        </span>
+                                        <div className="flex items-center gap-1 text-gray-500">
+                                            <span>Nota:</span>
+
+                                            <div className="flex text-yellow-500">
+                                                <Star size={16} fill="currentColor" />
+                                                <Star size={16} fill="currentColor" />
+                                                <Star size={16} fill="currentColor" />
+                                                <Star size={16} fill="currentColor" />
+                                            </div>
+
+                                            <span>4.0</span>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -169,9 +217,17 @@ function Dashboard() {
                                             <strong>“A Metamorfose”</strong>
                                         </p>
 
-                                        <span className="text-gray-500">
-                                            Nota: ⭐⭐⭐ 3.0
-                                        </span>
+                                        <div className="flex items-center gap-1 text-gray-500">
+                                            <span>Nota:</span>
+
+                                            <div className="flex text-yellow-500">
+                                                <Star size={16} fill="currentColor" />
+                                                <Star size={16} fill="currentColor" />
+                                                <Star size={16} fill="currentColor" />
+                                            </div>
+
+                                            <span>3.0</span>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -195,7 +251,7 @@ function Dashboard() {
                                     21 de abril, 12:45
                                 </span>
                             </div>
-                            
+
                         </div>
 
 

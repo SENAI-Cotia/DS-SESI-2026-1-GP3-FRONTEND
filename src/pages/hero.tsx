@@ -12,8 +12,24 @@ import phones from "../assets/phones.png"
 import app_store from "../assets/app_store.png"
 import play_store from "../assets/play_store.png"
 import qrcode from "../assets/qrcode.png"
+import {  useNavigate } from "react-router-dom"
+
 
 function Hero() {
+  const navigate = useNavigate();
+
+  /* se nao estiver logado, vai para o login */
+  function handleComeçar() {
+    const usuario = sessionStorage.getItem("user");
+
+    if (!usuario) {
+      navigate("/login");
+      return;
+    }
+
+    navigate("/dashboard")
+  }
+
   return (
     <>
       <Navbar />
@@ -56,9 +72,9 @@ function Hero() {
             Organize alunos, gerencie livros e acompanhe as atividades da biblioteca de forma simples e eficiente.
           </p>
 
-          <button className="mt-8 border text-lg border-white px-24 py-4 rounded-lg hover:bg-white hover:text-[#3E579D] cursor-pointer hover:scale-105 transition duration-300">
-            Começar agora
-          </button>
+            <button onClick={handleComeçar} className="mt-8 border text-lg border-white px-24 py-4 rounded-lg hover:bg-white hover:text-[#3E579D] cursor-pointer hover:scale-105 transition duration-300">
+              Começar agora
+            </button>
 
         </div>
 
@@ -109,7 +125,7 @@ function Hero() {
 
         {/* Banner */}
         <div className="w-full h-96 bg-[#4A5EA8] rounded-2xl border-4 border-[#5B3A29] flex items-center justify-center text-white text-xl">
-          Banner de funcionalidades
+         <img src="https://collegeinfogeek.com/cdn-cgi/image/format=auto,slow-connection-quality=30,onerror=redirect/https://collegeinfogeek.com/wp-content/uploads/2018/11/Essential-Books.jpg" alt="" />
         </div>
 
       </div>
@@ -177,7 +193,7 @@ function Hero() {
       </div>
 
 
-     <Footer/>
+      <Footer />
     </>
   )
 }
