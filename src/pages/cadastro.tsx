@@ -1,65 +1,95 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-const API = "http://10.92.199.11:3000";
+import { Api } from "@/lib/api";
+import { toast } from "sonner";
 
 export default function Cadastro() {
   const navigate = useNavigate();
-  const [cpf, setCpf] = useState("");
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState("");
   const [erro, setErro] = useState("");
-  const [carregando, setCarregando] = useState(false);
+  const [novoUsuario, setNovoUsuario] = useState({
+    cpf: "",
+    nome: "",
+    email: "",
+    senha: "",
+    confirmarSenha: "",
+  });
+
+  /* atualizar os campos */
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setNovoUsuario({
+      ...novoUsuario,
+      [e.target.name]: e.target.value,
+    });
+  }
 
   async function handleCadastro() {
     setErro("");
 
-    if (!cpf || !nome || !email || !senha || !confirmarSenha) {
+    /* validacao dos campos */
+    if (
+      !novoUsuario.cpf ||
+      !novoUsuario.nome ||
+      !novoUsuario.email ||
+      !novoUsuario.senha ||
+      !novoUsuario.confirmarSenha
+    ) {
       setErro("Preencha todos os campos.");
       return;
     }
 
-    if (senha.length < 8) {
-      setErro("Senha deve ter no mínimo 8 caracteres.");
+    /* tamanho do cpf */
+    if (novoUsuario.cpf.length !== 11) {
+      setErro("O CPF deve conter 11 dígitos.");
       return;
     }
 
-    if (senha !== confirmarSenha) {
+    /* tamanho da senha */
+    if (novoUsuario.senha.length < 8) {
+      setErro("A senha deve ter no mínimo 8 caracteres.");
+      return;
+    }
+
+    /* coincidir senha */
+    if (novoUsuario.senha !== novoUsuario.confirmarSenha) {
       setErro("As senhas não coincidem.");
       return;
     }
 
-    setCarregando(true);
+
     try {
-      const response = await fetch(`${API}/bibliotecaria`, { // ✅ corrigido
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome, email, cpf, senha }), // ✅ curso adicionado
+      await Api.post("/bibliotecaria", {
+        cpf: novoUsuario.cpf,
+        nome: novoUsuario.nome,
+        email: novoUsuario.email,
+        senha: novoUsuario.senha,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setErro(data.error || "Erro ao criar conta.");
-        return;
-      }
-
       navigate("/login");
-    } catch (err) {
-      setErro("Não foi possível conectar ao servidor.");
-    } finally {
-      setCarregando(false);
+
+      toast.success("Cadastro realizado com sucesso!")
+    } catch (error: any) {
+      setErro(
+        error.response?.data?.error ||
+        "Não foi possível conectar ao servidor."
+      );
     }
   }
 
   return (
-    <div className="h-screen w-full flex bg-[#0f172a]">
+    <div
+      className="h-screen w-full flex"
+      style={{
+        backgroundImage:
+          "linear-gradient(to right, rgba(15,23,42,0.9), rgba(15,23,42,0.6)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
 
-      {/* FORMULÁRIO À ESQUERDA */}
-      <div className="w-1/2 flex items-center justify-center bg-gradient-to-br from-[#0f172a] to-[#284d8a]">
-        <div className="backdrop-blur-md bg-white/20 border border-white/20 p-10 rounded-2xl shadow-2xl w-[400px]">
+      {/* Formulário */}
+      <div className="w-1/2 flex items-center justify-center">
+        <div className="backdrop-blur-md bg-white/10 border border-white/20 p-10 rounded-2xl shadow-2xl w-[400px]">
 
           <h2 className="text-white text-center text-lg tracking-widest mb-6">
             CADASTRO
@@ -67,91 +97,93 @@ export default function Cadastro() {
 
           <label className="text-gray-200 text-sm">CPF</label>
           <input
-            type="text"
+            name="cpf"
             placeholder="CPF"
-            value={cpf}
-            onChange={(e) => setCpf(e.target.value)}
+            maxLength={11}
+            value={novoUsuario.cpf}
+            onChange={(e) => {
+              const valor = e.target.value;
+
+              if (!/^\d*$/.test(valor)) return;
+
+              setNovoUsuario({
+                ...novoUsuario,
+                cpf: valor,
+              });
+            }}
             className="w-full mt-1 mb-3 p-3 rounded-lg bg-white text-black outline-none"
           />
 
           <label className="text-gray-200 text-sm">Nome Completo</label>
           <input
-            type="text"
+            name="nome"
             placeholder="Nome Completo"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
+            value={novoUsuario.nome}
+            onChange={handleChange}
             className="w-full mt-1 mb-3 p-3 rounded-lg bg-white text-black outline-none"
           />
 
           <label className="text-gray-200 text-sm">E-mail</label>
           <input
-            type="email"
+            name="email"
             placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={novoUsuario.email}
+            onChange={handleChange}
             className="w-full mt-1 mb-3 p-3 rounded-lg bg-white text-black outline-none"
           />
-
-          
 
           <label className="text-gray-200 text-sm">Senha</label>
           <input
+            name="senha"
+            placeholder="Senha"
             type="password"
-            placeholder="Senha (mín. 8 caracteres)"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
+            value={novoUsuario.senha}
+            onChange={handleChange}
             className="w-full mt-1 mb-3 p-3 rounded-lg bg-white text-black outline-none"
           />
 
+
           <label className="text-gray-200 text-sm">Confirmar Senha</label>
           <input
-            type="password"
+            name="confirmarSenha"
             placeholder="Confirmar Senha"
-            value={confirmarSenha}
-            onChange={(e) => setConfirmarSenha(e.target.value)}
+            type="password"
+            value={novoUsuario.confirmarSenha}
+            onChange={handleChange}
+            className="w-full mt-1 mb-3 p-3 rounded-lg bg-white text-black outline-none"
             onKeyDown={(e) => e.key === "Enter" && handleCadastro()}
-            className="w-full mt-1 mb-4 p-3 rounded-lg bg-white text-black outline-none"
           />
 
           {erro && (
-            <p className="text-red-400 text-sm mb-4 text-center">{erro}</p>
+            <p className="text-red-400 text-sm mb-4 text-center">
+              {erro}
+            </p>
           )}
 
           <button
             type="button"
             onClick={handleCadastro}
-            disabled={carregando}
-            className="w-full bg-blue-900 hover:bg-blue-800 transition p-3 rounded-lg text-white font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+
+            className="mt-4 w-full bg-blue-900 hover:bg-blue-800 transition p-3 rounded-lg text-white font-semibold cursor-pointer"
           >
-            {carregando ? "Cadastrando..." : "Cadastrar"}
+            Cadastrar
           </button>
 
           <p className="text-gray-100 text-sm mt-4 text-center">
             Já possui uma conta?{" "}
-            <Link to="/login" className="text-blue-400 cursor-pointer">
-              Login
-            </Link>
+            <Link to="/login" className="text-blue-400 cursor-pointer">Login</Link>
           </p>
         </div>
       </div>
 
       {/* IMAGEM À DIREITA */}
-      <div
-        className="w-1/2 flex flex-col justify-center px-16 text-white relative"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.7)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
+      <div className="w-1/2 flex flex-col justify-center px-16 text-white relative">
         <img
           src="/KOR logo.png"
-          alt="Kingdom of Reading"
           className="absolute top-5 left-1/2 -translate-x-1/2 w-40 invert mt-15"
         />
 
-        <div className="h-16" />
+        <div className="h-16"></div>
 
         <h1 className="text-7xl font-serif leading-tight">
           Descubra,<br />
@@ -164,7 +196,7 @@ export default function Cadastro() {
           o que seus colegas acharam.
         </p>
 
-        <p className="absolute bottom-4 text-xs text-gray-400">
+        <p className="absolute bottom-4 right-4 text-xs text-white">
           © Kingdom of Reading - KOR All rights reserved.
         </p>
       </div>

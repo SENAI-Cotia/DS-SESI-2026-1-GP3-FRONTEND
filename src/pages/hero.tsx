@@ -12,8 +12,25 @@ import phones from "../assets/phones.png"
 import app_store from "../assets/app_store.png"
 import play_store from "../assets/play_store.png"
 import qrcode from "../assets/qrcode.png"
+import { useNavigate } from "react-router-dom"
+import images from "../assets/images.jpg"
+
 
 function Hero() {
+  const navigate = useNavigate();
+
+  /* se nao estiver logado, vai para o login */
+  function handleComeçar() {
+    const usuario = sessionStorage.getItem("user");
+
+    if (!usuario) {
+      navigate("/login");
+      return;
+    }
+
+    navigate("/dashboard")
+  }
+
   return (
     <>
       <Navbar />
@@ -56,7 +73,7 @@ function Hero() {
             Organize alunos, gerencie livros e acompanhe as atividades da biblioteca de forma simples e eficiente.
           </p>
 
-          <button className="mt-8 border text-lg border-white px-24 py-4 rounded-lg hover:bg-white hover:text-[#3E579D] cursor-pointer hover:scale-105 transition duration-300">
+          <button onClick={handleComeçar} className="mt-8 border text-lg border-white px-24 py-4 rounded-lg hover:bg-white hover:text-[#3E579D] cursor-pointer hover:scale-105 transition duration-300">
             Começar agora
           </button>
 
@@ -108,10 +125,14 @@ function Hero() {
         </h2>
 
         {/* Banner */}
-        <div className="w-full h-96 bg-[#4A5EA8] rounded-2xl border-4 border-[#5B3A29] flex items-center justify-center text-white text-xl">
-          Banner de funcionalidades
+        <div className="w-full h-96 rounded-2xl border-4 border-[#5B3A29] overflow-hidden">
+          <img
+            src="https://i.etsystatic.com/19717520/r/il/7f950e/4233726582/il_fullxfull.4233726582_brdh.jpg"
+            alt="Livros"
+            className="w-full h-full object-cover"
+            draggable={false}
+          />
         </div>
-
       </div>
 
 
@@ -177,7 +198,7 @@ function Hero() {
       </div>
 
 
-     <Footer/>
+      <Footer />
     </>
   )
 }

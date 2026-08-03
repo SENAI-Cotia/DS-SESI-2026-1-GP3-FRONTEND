@@ -1,7 +1,22 @@
 import Footer from "@/components/footer"
 import Navbar from "../components/navbar"
+import { useNavigate } from "react-router-dom";
 
 function Sobre() {
+  const navigate = useNavigate();
+
+  /* se nao estiver logado, vai para o login */
+  function handleComeçar() {
+    const usuario = sessionStorage.getItem("user");
+
+    if (!usuario) {
+      navigate("/login");
+      return;
+    }
+
+    navigate("/dashboard")
+  }
+
   return (
     <>
       <Navbar />
@@ -82,16 +97,16 @@ function Sobre() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
 
             {[
-              { nome: "Ana Carvalho", funcao: "Desenvolvedora Mobile" },
-              { nome: "Breno Amaral", funcao: "Dev Front & Designer" },
-              { nome: "Gabriel Bento", funcao: "Desenvolvedor Mobile" },
-              { nome: "Lavínia Bispo", funcao: "Analista de APIs" },
-              { nome: "Miguel Francelino", funcao: "Desenvolvedor Full-Stack" },
-              { nome: "Samuel Santos", funcao: "Desenvolvedor Back-End & APIs" }
+              { nome: "Ana Carvalho", funcao: "Desenvolvedora Mobile", imagem:"https://avatars.githubusercontent.com/u/215559794?v=4"},
+              { nome: "Breno Amaral", funcao: "Dev Front & Designer", imagem:"https://avatars.githubusercontent.com/u/215558967?v=4"},
+              { nome: "Gabriel Bento", funcao: "Desenvolvedor Mobile", imagem: "https://avatars.githubusercontent.com/u/196592275?v=4"},
+              { nome: "Lavínia Bispo", funcao: "Analista de APIs", imagem:"https://avatars.githubusercontent.com/u/215558371?v=4"},
+              { nome: "Miguel Francelino", funcao: "Desenvolvedor Full-Stack", imagem: "https://avatars.githubusercontent.com/u/215557568?v=4" },
+              { nome: "Samuel Santos", funcao: "Desenvolvedor Back-End & APIs", imagem: "https://avatars.githubusercontent.com/u/215557571?v=4"}
             ].map((membro, index) => (
               <div key={index} className="bg-white rounded-xl p-6 shadow-md">
 
-                <div className="w-40 h-40 bg-gray-200 rounded-full mx-auto mb-3"></div>
+                <img src={membro.imagem} className="w-40 h-40 bg-gray-200 rounded-full mx-auto mb-3"></img>
 
                 <h4 className="font-semibold">{membro.nome}</h4>
                 <span className="text-sm text-gray-500">{membro.funcao}</span>
@@ -114,7 +129,7 @@ function Sobre() {
             Comece a organizar sua biblioteca agora mesmo.
           </p>
 
-          <button className="bg-[#4A5EA8] text-white px-8 py-3 rounded-lg hover:scale-105 transition cursor-pointer">
+          <button onClick={handleComeçar} className="bg-[#4A5EA8] text-white px-8 py-3 rounded-lg hover:scale-105 transition cursor-pointer">
             Começar agora
           </button>
 
@@ -122,7 +137,7 @@ function Sobre() {
 
       </main>
 
-      <Footer/>
+      <Footer />
     </>
   )
 }
