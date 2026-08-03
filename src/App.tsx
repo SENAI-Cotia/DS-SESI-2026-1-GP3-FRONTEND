@@ -25,19 +25,6 @@ export default function App() {
       <Route path="cadastro" element={<Cadastro />} />
       <Route path="faq" element={<FAQ />} />
 
-<<<<<<< Updated upstream
-      {/* Páginas principais */}
-      <Route path="/sobre" element={<Sobre />} />
-      <Route path="/contato" element={<Contato />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/cadastro" element={<Cadastro />} />
-
-      {/* Configurações */}
-      <Route path="/configuracao" element={<Configuracao />} />
-      <Route path="/privacidade" element={<Privacidade />} />
-      <Route path="/suporte" element={<Suporte />} />
-      <Route path="/faq" element={<FAQ />} />
-=======
       {/* páginas que exigem login */}
       <Route element={<ProtectedRoute />}>
         <Route path="dashboard" element={<Dashboard />} />
@@ -47,7 +34,6 @@ export default function App() {
         <Route path="suporte" element={<Suporte />} />
         <Route path="privacidade" element={<Privacidade />} />
       </Route>
->>>>>>> Stashed changes
     </Routes>
   );
 }
